@@ -1,0 +1,20 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "axis-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3001
+    },
+    {
+      "name": "wip-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3101"],
+      "port": 3101,
+      "env": {
+        "NEXT_PUBLIC_API_BASE": "http://localhost:8100"
+      }
+    }
+  ]
+}

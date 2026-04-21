@@ -1,0 +1,1337 @@
+"use client";
+
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { TopBar } from "@/components/thrive/TopBar";
+import { Footer } from "@/components/thrive/Footer";
+import { RoleGate } from "@/components/RoleGate";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import {
+  api,
+  type AgentStatus,
+  type Application,
+  type FunnelStage,
+  type InterviewRecord,
+  type InterviewReport,
+  type Job,
+} from "@/lib/api";
+import { useAutoRefresh } from "@/lib/hooks/useAutoRefresh";
+import { STAGE_LABEL, STAGE_ORDER } from "@/lib/stages";
+
+/**
+ * Employee-facing live status page (the "after" half of the guided Apply flow).
+ *
+ * Three things must always be visible at a glance:
+ *  1. WHAT IS HAPPENING NOW   — narrative bound to (stage × agent_status)
+ *  2. WHAT HAPPENS NEXT       — explicit next step the agent will take
+ *  3. WHAT DO I DO            — when agent_status is waiting_candidate, the
+ *                                user gets a slot picker right inline
+ */
+
+export default function EmployeeStatusPage() {
+  return (
+    <RoleGate allow={["employee"]}>
+      <EmployeeStatusContent />
+    </RoleGate>
+  );
+}
+
+interface Narrative {
+  now: string;
+  next: string;
+  tone: "info" | "action" | "success" | "danger";
+}
+
+function narrativeFor(app: Application): Narrative {
+  const stage: FunnelStage = app.stage;
+  const status: AgentStatus = app.agent_status;
+
+  if (stage === "rejected") {
+    return {
+      now: "We're sorry — your application for this role isn't moving forward.",
+      next: "You'll receive an email from us shortly. We'd love to see you apply for other roles at Axis that match your strengths.",
+      tone: "danger",
+    };
+  }
+  if (stage === "offer_negotiation") {
+    return {
+      now: "🎉 You've cleared the panel interview! Axis has approved your offer in principle.",
+      next: "Our compensation team is finalising the details and will reach out shortly with your formal offer letter.",
+      tone: "success",
+    };
+  }
+  if (stage === "offer") {
+    return {
+      now: "🎉 Your formal offer has been sent. Welcome to Axis!",
+      next: "Check your inbox for the offer letter — it covers your CTC, joining bonus and onboarding steps. We can't wait to have you on board.",
+      tone: "success",
+    };
+  }
+  if (stage === "applied") {
+    if (status === "waiting_hr") {
+      return {
+        now: "Your application is with the Axis hiring team for review.",
+        next: "We'll be in touch soon with next steps. This page will refresh automatically as soon as there's an update.",
+        tone: "info",
+      };
+    }
+    return {
+      now: "We're reviewing your profile against this role right now.",
+      next: "Once we're done, the Axis hiring team will either invite you to Round 1 or get in touch directly.",
+      tone: "info",
+    };
+  }
+  if (stage === "screened" && status === "running") {
+    return {
+      now: "We're checking your availability against the hiring team's calendar to suggest interview times that work for you.",
+      next: "You'll see 3 suggested time slots here in just a moment.",
+      tone: "info",
+    };
+  }
+  if (stage === "screened" && status === "waiting_candidate") {
+    return {
+      now: "We've found 3 interview times that work for you — pick the one you prefer.",
+      next: "Once you confirm, we'll send you the Microsoft Teams invite by email and add it to your calendar.",
+      tone: "action",
+    };
+  }
+  if (stage === "screened" && status === "waiting_hr") {
+    return {
+      now: "We couldn't find a common interview slot in the next few days, so the Axis hiring team is stepping in to help.",
+      next: "Your hiring contact will either open up a fresh time on the panel calendar or reach out directly. This page will refresh automatically as soon as new slots are ready.",
+      tone: "danger",
+    };
+  }
+  if (stage === "r1_scheduled") {
+    if (!app.r1_started) {
+      return {
+        now: "Your Round 1 interview is booked. Whenever you're ready, click 'Start interview' below to begin.",
+        next: "It's a short conversational interview — we'll ask a few role-related questions and you can answer at your own pace. You'll see your result here a few seconds after you finish.",
+        tone: "action",
+      };
+    }
+    return {
+      now: "Thanks for completing your Round 1 interview! We're putting your result together now.",
+      next: "This usually takes a few seconds. The page will refresh automatically with your result and what happens next.",
+      tone: "info",
+    };
+  }
+  if (stage === "r1_done") {
+    if (status === "waiting_hr") {
+      return {
+        now: "You've cleared Round 1 — congratulations! The Axis hiring team is lining up your Round 2 panel interview now.",
+        next: "We'll suggest 3 Round 2 time slots for you to choose from as soon as the panel is confirmed.",
+        tone: "info",
+      };
+    }
+    if (status === "waiting_candidate" && app.proposed_r2_slots.length > 0) {
+      return {
+        now: "Three Round 2 panel interview times are ready for you below — pick the one that works best.",
+        next: "Once you confirm, we'll send you the Teams invite and brief the panel ahead of the conversation.",
+        tone: "action",
+      };
+    }
+    return {
+      now: "You've cleared Round 1 — congratulations! We're lining up your Round 2 panel interview now.",
+      next: "We'll suggest 3 Round 2 time slots for you to choose from as soon as the panel is confirmed.",
+      tone: "info",
+    };
+  }
+  if (stage === "r2_scheduled") {
+    return {
+      now: "Your Round 2 panel interview is scheduled.",
+      next: "After Round 2, the panel will share their feedback and we'll get back to you with the outcome.",
+      tone: "info",
+    };
+  }
+  return {
+    now: "We're working on your application.",
+    next: "This page updates live as your application moves forward.",
+    tone: "info",
+  };
+}
+
+function EmployeeStatusContent() {
+  const params = useParams<{ appId: string }>();
+  const router = useRouter();
+  const [confirming, setConfirming] = useState<number | null>(null);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [startingR1, setStartingR1] = useState(false);
+  const [startR1Error, setStartR1Error] = useState<string | null>(null);
+  // UX: between "I confirmed a slot" and "the orchestrator finished
+  // booking the Teams meeting" the page used to silently sit on the
+  // old waiting_candidate state for several seconds, which read as
+  // "nothing happened". This sticky overlay closes that gap with a
+  // visible processing banner that we keep up until the funnel
+  // actually advances. The same banner is reused for any other
+  // long-running orchestrator transition (start R1, reschedule).
+  const [transitionLabel, setTransitionLabel] = useState<string | null>(null);
+
+  // "Selection ≠ commitment" — clicking a slot tile only stages a
+  // pending choice. A confirm dialog then asks the candidate to
+  // explicitly book it. Same for the Start R1 CTA.
+  const [pendingR1Slot, setPendingR1Slot] = useState<number | null>(null);
+  const [pendingR2Slot, setPendingR2Slot] = useState<number | null>(null);
+  const [pendingStartR1, setPendingStartR1] = useState(false);
+  // Reschedule flow — pendingReschedule is the round currently in the
+  // confirm dialog (R1/R2 or null when no dialog is open).
+  const [pendingReschedule, setPendingReschedule] = useState<"R1" | "R2" | null>(null);
+  const [rescheduleError, setRescheduleError] = useState<string | null>(null);
+
+  const loadApp = useCallback(
+    () => api.getApplication(params.appId),
+    [params.appId],
+  );
+  const { data: rawApp, error, refresh } = useAutoRefresh<Application>(loadApp, 3000);
+  // If the backend no longer knows this id (e.g. it was restarted and the
+  // in-memory store was wiped), drop the stale cached app so we show the
+  // "application no longer exists" empty state instead of rendering a page
+  // full of dead action buttons.
+  const appMissing = !!error && /404/.test(error);
+  const app = appMissing ? null : rawApp;
+
+  // Fetch the JD once we know which job_id this application is bound to,
+  // so the header can show the role title, location, band etc. — instead
+  // of just the opaque "JD job-590321" code.
+  const [job, setJob] = useState<Job | null>(null);
+  useEffect(() => {
+    if (!app?.job_id) return;
+    let cancelled = false;
+    api
+      .getJob(app.job_id)
+      .then((j) => {
+        if (!cancelled) setJob(j);
+      })
+      .catch(() => {
+        /* non-fatal: header just falls back to job_id */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [app?.job_id]);
+
+  const stageIdx = app ? STAGE_ORDER.indexOf(app.stage as any) : -1;
+  const narrative = app ? narrativeFor(app) : null;
+
+  const onStartR1 = async () => {
+    if (!app) return;
+    setStartingR1(true);
+    setStartR1Error(null);
+    setTransitionLabel("Connecting you to your Round 1 interview…");
+    try {
+      // Two-step kickoff:
+      //   1. Tell the orchestrator the candidate has joined R1 — this
+      //      flips the funnel out of WAITING_CANDIDATE and creates the
+      //      InterviewRecord we need for the virtual interview session.
+      //   2. Hand the candidate off to the in-app Virtual Interviewer
+      //      page (mirrors the existing Xebia virtual-interviewer UX).
+      //      That page calls /virtual-interview/start on mount.
+      await api.startR1Interview(app.id);
+      router.push(`/thrive/virtual-interview/${app.id}`);
+    } catch (e: any) {
+      setStartR1Error(e.message || String(e));
+    } finally {
+      setStartingR1(false);
+    }
+  };
+
+  const onConfirmSlot = async (idx: number, round: "R1" | "R2") => {
+    if (!app) return;
+    setConfirming(idx);
+    setConfirmError(null);
+    setTransitionLabel(
+      round === "R1"
+        ? "Booking your Round 1 interview on Microsoft Teams…"
+        : "Booking your Round 2 panel interview on Microsoft Teams…",
+    );
+    try {
+      await api.confirmSlot(app.id, idx, round);
+      await refresh();
+    } catch (e: any) {
+      setConfirmError(e.message || String(e));
+      setTransitionLabel(null);
+    } finally {
+      setConfirming(null);
+    }
+  };
+
+  // Auto-clear the transition overlay once the application's funnel
+  // actually advances out of the "waiting_candidate" state — i.e. the
+  // orchestrator has finished doing its work and the page is showing
+  // the new state. This is the visible signal "we're done processing".
+  useEffect(() => {
+    if (!transitionLabel || !app) return;
+    if (app.agent_status !== "running" && app.agent_status !== "waiting_candidate") {
+      setTransitionLabel(null);
+    }
+    // Special-case: post-confirm we're waiting for stage to flip past
+    // "screened"/"r1_done" too — clear the moment we see r1_scheduled
+    // / r2_scheduled / waiting_panel.
+    if (app.stage === "r1_scheduled" || app.stage === "r2_scheduled") {
+      setTransitionLabel(null);
+    }
+  }, [app?.stage, app?.agent_status, transitionLabel]);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-axis-canvas">
+      <TopBar />
+      {transitionLabel && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="sticky top-0 z-40 bg-axis-magenta text-white shadow-card"
+        >
+          <div className="max-w-5xl mx-auto px-8 py-3 flex items-center gap-3 text-sm font-medium">
+            <span
+              className="inline-block h-3 w-3 rounded-full border-2 border-white border-t-transparent animate-spin"
+              aria-hidden="true"
+            />
+            <span>{transitionLabel}</span>
+            <span className="text-white/70 text-xs">
+              Hold tight — this usually takes 3-6 seconds.
+            </span>
+          </div>
+        </div>
+      )}
+      <main className="flex-1 px-8 py-8 max-w-5xl w-full mx-auto">
+        <Link
+          href="/thrive"
+          className="text-axis-magenta text-xs font-medium hover:underline"
+        >
+          ← Back to job recommendations
+        </Link>
+
+        {/* If the backend no longer knows this application id (typically
+            because the in-memory store was wiped by a restart or a demo
+            reset), show a clear empty state instead of rendering stale
+            React state with dead action buttons. */}
+        {appMissing && (
+          <div className="mt-6 p-6 bg-axis-pink-soft border border-axis-magenta rounded-card text-sm text-axis-burgundy">
+            <p className="font-semibold text-axis-ink">
+              This application no longer exists on the server.
+            </p>
+            <p className="mt-2 text-axis-muted">
+              We couldn't find the application{" "}
+              <code className="text-axis-ink">{params.appId}</code>. Head
+              back to Thrive and apply again to start a fresh one.
+            </p>
+            <Link
+              href="/thrive"
+              className="mt-4 inline-block px-4 py-2 rounded bg-axis-magenta text-white text-sm font-semibold hover:bg-axis-burgundy"
+            >
+              ← Back to Thrive to re-apply
+            </Link>
+          </div>
+        )}
+
+        {error && !appMissing && (
+          <div className="mt-6 p-4 bg-axis-pink-soft border border-axis-magenta rounded text-sm text-axis-burgundy">
+            {error}
+          </div>
+        )}
+
+        {!app && !error && (
+          <p className="mt-6 text-sm text-axis-muted">Loading your application…</p>
+        )}
+
+        {app && narrative && (
+          <>
+            {/* ---------- Header card ---------- */}
+            <div className="mt-6 bg-axis-canvas border border-axis-divider rounded-card shadow-card p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs uppercase tracking-wider text-axis-magenta font-semibold">
+                    Your application is live
+                  </p>
+                  <h1 className="text-2xl font-display text-axis-ink mt-1 leading-tight">
+                    {job?.title ?? "Loading role…"}
+                  </h1>
+                  {job && (
+                    <p className="text-xs text-axis-muted mt-1">
+                      Job ID <strong className="text-axis-ink">{job.job_id}</strong>
+                      {" · "}
+                      <span className="text-axis-ink">{job.location}</span>
+                      {job.band ? (
+                        <>
+                          {" · "}
+                          Band <span className="text-axis-ink">{job.band}</span>
+                        </>
+                      ) : null}
+                      {job.function ? (
+                        <>
+                          {" · "}
+                          <span className="text-axis-ink">{job.function}</span>
+                        </>
+                      ) : null}
+                    </p>
+                  )}
+                  <p className="text-sm text-axis-muted mt-2">
+                    Application reference{" "}
+                    <code className="text-axis-ink">{app.id}</code>
+                    {" · "}
+                    Match{" "}
+                    <strong className="text-axis-ink">
+                      {app.match_percent.toFixed(0)}%
+                    </strong>
+                  </p>
+                </div>
+                {/* Internal status badge intentionally hidden on the
+                    candidate view — the timeline + "what's happening
+                    now" narrative carries the same information in human
+                    language. The badge is still rendered on the
+                    Business Partner / Panel / Offer-Team consoles. */}
+              </div>
+
+              {/* Progress strip with stage labels */}
+              <div className="mt-6">
+                <div className="flex items-center gap-2">
+                  {STAGE_ORDER.map((s, i) => {
+                    const reached = app.stage === "rejected" ? false : i <= stageIdx;
+                    const active = i === stageIdx && app.stage !== "rejected";
+                    return (
+                      <div key={s} className="flex-1 flex items-center">
+                        <div
+                          className={`h-2 flex-1 rounded ${
+                            reached ? "bg-axis-magenta" : "bg-axis-divider"
+                          } ${active ? "ring-2 ring-axis-magenta/40" : ""}`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-2 flex justify-between text-[10px] text-axis-muted">
+                  {STAGE_ORDER.map((s, i) => (
+                    <span
+                      key={s}
+                      className={`flex-1 text-center ${
+                        i === stageIdx && app.stage !== "rejected"
+                          ? "text-axis-magenta font-semibold"
+                          : ""
+                      }`}
+                    >
+                      {STAGE_LABEL[s]}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ---------- AI Screening Result card ----------
+                Visible the moment stage ≥ SCREENED. Gives the candidate a
+                transparent view of the rubric the agent applied: score,
+                which required skills matched (from their Thrive profile),
+                which ones are missing, and the one-line rationale.
+
+                Hidden for external candidates — they bypass the rubric
+                gate entirely and jump straight to the L1 AI interview
+                slot picker. (Q2 demo product call.) */}
+            {app.stage !== "applied" && app.candidate_kind !== "external" && (
+              <div className="mt-4 bg-axis-canvas border border-axis-divider rounded-card shadow-card p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+                      Step 1 · AI screening result
+                    </p>
+                    <h2 className="text-base font-semibold text-axis-ink mt-1">
+                      How your profile matches this role
+                    </h2>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p
+                      className={`text-3xl font-display leading-none ${
+                        app.match_percent >= 75
+                          ? "text-emerald-600"
+                          : "text-axis-burgundy"
+                      }`}
+                    >
+                      {app.match_percent.toFixed(0)}%
+                    </p>
+                    <p className="text-[10px] uppercase tracking-wider text-axis-muted mt-1">
+                      match
+                    </p>
+                  </div>
+                </div>
+
+                {app.match_rationale && (
+                  <p className="text-xs text-axis-ink-soft mt-3 leading-relaxed">
+                    <span className="text-axis-magenta font-semibold">
+                      Why this score:
+                    </span>{" "}
+                    {app.match_rationale}
+                  </p>
+                )}
+
+                <div className="mt-4 grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-axis-muted font-semibold">
+                      Matched skills ({app.matched_skills.length})
+                    </p>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {app.matched_skills.length === 0 && (
+                        <span className="text-[11px] text-axis-muted-light">
+                          none
+                        </span>
+                      )}
+                      {app.matched_skills.map((s) => (
+                        <span
+                          key={s}
+                          className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700"
+                        >
+                          ✓ {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-axis-muted font-semibold">
+                      Skills you'll need to demonstrate (
+                      {app.missing_skills.length})
+                    </p>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {app.missing_skills.length === 0 && (
+                        <span className="text-[11px] text-axis-muted-light">
+                          none — full coverage
+                        </span>
+                      )}
+                      {app.missing_skills.map((s) => (
+                        <span
+                          key={s}
+                          className="text-[10px] px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-700"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-axis-muted mt-4 border-t border-axis-divider pt-3">
+                  Shortlist threshold for this JD is{" "}
+                  <strong className="text-axis-ink">75%</strong>.{" "}
+                  {app.match_percent >= 75
+                    ? "Great news — you've cleared the bar and we're moving you into Round 1 scheduling."
+                    : "Unfortunately your profile didn't clear the bar for this role, so we're not moving forward to Round 1."}
+                </p>
+              </div>
+            )}
+
+            {/* ---------- Level 1 framing for external candidates ----------
+                External candidates skip the rubric screening and the
+                generic "now / next" narrative. They get a dedicated
+                Level 1 — AI Agent Interview header that makes it
+                explicit what the next step is. */}
+            {app.candidate_kind === "external" &&
+              (app.stage === "applied" || app.stage === "screened") && (
+                <div
+                  className="mt-4 rounded-card p-5 text-white shadow-card"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #6b2566 0%, #4a1e47 100%)",
+                  }}
+                >
+                  <p className="text-[10px] uppercase tracking-widest text-white/70 font-bold">
+                    Level 1 · Axis AI Interview
+                  </p>
+                  <h2 className="text-xl font-display mt-1">
+                    {app.agent_status === "waiting_hr"
+                      ? "We couldn't find a common Round 1 slot — your Business Partner has been notified"
+                      : app.proposed_r1_slots && app.proposed_r1_slots.length > 0
+                      ? "Pick a time for your Round 1 interview"
+                      : "Getting your Round 1 interview times ready…"}
+                  </h2>
+                  <p className="text-sm text-white/80 mt-2 leading-relaxed">
+                    {app.agent_status === "waiting_hr"
+                      ? (app.next_action ||
+                          "We couldn't find a common Round 1 slot in the next 5 business days. Your Business Partner has been notified and will free up time on the panel calendar — this page will refresh automatically once new times are available.")
+                      : app.proposed_r1_slots && app.proposed_r1_slots.length > 0
+                      ? "Your Round 1 interview is a conversational AI interview. Pick one of the times below — you'll join on Microsoft Teams, answer a few role-related questions out loud, and we'll share your result on this page shortly after. No human panellists at this stage."
+                      : "Your Round 1 interview is a conversational AI interview. We're checking calendars to suggest times that work — this usually takes a few seconds. The page will refresh automatically."}
+                  </p>
+                </div>
+              )}
+
+            {/* ---------- Guided "now / next" card ---------- */}
+            <div
+              className={`mt-4 rounded-card border p-5 ${
+                app.candidate_kind === "external" &&
+                (app.stage === "applied" || app.stage === "screened")
+                  ? "hidden"
+                  : ""
+              } ${
+                narrative.tone === "danger"
+                  ? "bg-axis-pink-soft border-axis-magenta"
+                  : narrative.tone === "success"
+                  ? "bg-axis-cream border-axis-cream-border"
+                  : narrative.tone === "action"
+                  ? "bg-axis-cream border-axis-cream-border"
+                  : "bg-axis-surface border-axis-divider"
+              }`}
+            >
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+                    What's happening now
+                  </p>
+                  <p className="text-sm text-axis-ink mt-1 leading-relaxed">
+                    {narrative.now}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+                    What happens next
+                  </p>
+                  <p className="text-sm text-axis-ink-soft mt-1 leading-relaxed">
+                    {narrative.next}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ---------- R1 slot picker — only BEFORE the meeting is booked.
+                Once stage advances past `screened`, R1 has been booked and
+                the SlotPickerCard becomes wrong (the screenshot bug). The
+                BookedInterviewCard takes over from here. ---------- */}
+            {app.stage === "screened" &&
+              app.agent_status === "waiting_candidate" &&
+              app.proposed_r1_slots.length > 0 && (
+                <SlotPickerCard
+                  round="R1"
+                  slots={app.proposed_r1_slots}
+                  selectedIdx={pendingR1Slot}
+                  onSelect={(i) => {
+                    setConfirmError(null);
+                    setPendingR1Slot(i);
+                  }}
+                  onClear={() => setPendingR1Slot(null)}
+                  title={
+                    app.candidate_kind === "external"
+                      ? "Pick your Level 1 interview time"
+                      : "Pick your Round 1 interview time"
+                  }
+                  subtitle={
+                    app.candidate_kind === "external"
+                      ? "Here are 3 times we can offer for your Level 1 interview. Tap a tile to select it — nothing is booked yet. You'll review and confirm before we create your Microsoft Teams meeting."
+                      : "We've checked your availability against your Business Partner's calendar and these 3 times work. Tap a tile to select one — nothing is booked yet. You'll review and confirm before we create your Teams meeting."
+                  }
+                  error={confirmError}
+                />
+              )}
+
+            {/* ---------- "Round 1 scheduled" card — once R1 is booked.
+                Shows the actual date/time, Teams join URL, and a
+                Reschedule button (disabled within 4h of the meeting).
+                Hidden once the candidate has started R1 — at that
+                point we no longer want to show "your interview is booked"
+                copy; the page is now about the result of the interview,
+                not the calendar slot. */}
+            {app.stage === "r1_scheduled" && !app.r1_started && (
+              <BookedInterviewCard
+                round="R1"
+                interview={app.interviews.find((i) => i.round === "R1") ?? null}
+                onReschedule={() => {
+                  setRescheduleError(null);
+                  setPendingReschedule("R1");
+                }}
+                error={rescheduleError && pendingReschedule === null ? rescheduleError : null}
+              />
+            )}
+
+            {/* ---------- "Round 1 finished — results coming" card.
+                Shown the moment the candidate clicks Start (r1_started)
+                so they don't keep seeing "Your Round 1 interview is
+                booked" after the conversation is over. */}
+            {app.stage === "r1_scheduled" && app.r1_started && (
+              <div className="mt-4 bg-axis-canvas border-2 border-axis-magenta rounded-card p-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wider bg-axis-magenta text-white font-semibold px-2 py-0.5 rounded">
+                    Round 1 finished
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-axis-muted">
+                    Scoring in progress
+                  </span>
+                </div>
+                <h2 className="text-lg font-semibold text-axis-ink mt-2">
+                  Your Round 1 interview is complete — results coming
+                </h2>
+                <p className="text-xs text-axis-muted mt-1 max-w-2xl">
+                  Thanks for finishing your Round 1 conversation. We're
+                  reviewing your answers right now — this usually takes
+                  only a few seconds. Your result and next step will
+                  appear on this page automatically.
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                  <span
+                    className="inline-block h-3 w-3 rounded-full border-2 border-axis-magenta border-t-transparent animate-spin"
+                    aria-hidden
+                  />
+                  <span className="text-xs text-axis-magenta font-semibold">
+                    Scoring your Round 1 answers…
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* ---------- Round 1 result + next step.
+                Shown once the funnel has actually advanced past R1 —
+                either to R1_DONE (cleared) or REJECTED (auto-closed). */}
+            {(app.stage === "r1_done" ||
+              app.stage === "r2_scheduled" ||
+              app.stage === "offer_negotiation" ||
+              app.stage === "offer") && (
+              <div className="mt-4 bg-axis-canvas border-2 border-emerald-500/60 rounded-card p-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wider bg-emerald-600 text-white font-semibold px-2 py-0.5 rounded">
+                    Round 1 cleared
+                  </span>
+                </div>
+                <h2 className="text-lg font-semibold text-axis-ink mt-2">
+                  You've passed Round 1 🎉
+                </h2>
+                <p className="text-xs text-axis-muted mt-1 max-w-2xl">
+                  Great job — your Round 1 answers cleared the bar for
+                  this role. The next step is your Round 2 panel interview
+                  with the hiring team.
+                </p>
+              </div>
+            )}
+
+            {app.stage === "rejected" && app.r1_started && (
+              <div className="mt-4 bg-axis-canvas border-2 border-axis-burgundy rounded-card p-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wider bg-axis-burgundy text-white font-semibold px-2 py-0.5 rounded">
+                    Round 1 closed
+                  </span>
+                </div>
+                <h2 className="text-lg font-semibold text-axis-ink mt-2">
+                  Your Round 1 result
+                </h2>
+                <p className="text-xs text-axis-muted mt-1 max-w-2xl">
+                  Thanks for taking the time to interview with us. Based
+                  on your Round 1 answers we won't be progressing this
+                  application further for this role. You're welcome to
+                  apply for other open roles on Thrive any time.
+                </p>
+                <Link
+                  href="/thrive"
+                  className="mt-4 inline-block px-4 py-2 rounded bg-axis-magenta text-white text-xs font-semibold hover:bg-axis-burgundy"
+                >
+                  Browse other open roles →
+                </Link>
+              </div>
+            )}
+
+            {/* ---------- R2 slot picker (only when WAITING_CANDIDATE @ R1_DONE) ---------- */}
+            {app.stage === "r1_done" &&
+              app.agent_status === "waiting_candidate" &&
+              app.proposed_r2_slots.length > 0 && (
+                <SlotPickerCard
+                  round="R2"
+                  slots={app.proposed_r2_slots}
+                  selectedIdx={pendingR2Slot}
+                  onSelect={(i) => {
+                    setConfirmError(null);
+                    setPendingR2Slot(i);
+                  }}
+                  onClear={() => setPendingR2Slot(null)}
+                  title="Pick your Round 2 panel interview time"
+                  subtitle="We've checked your availability against your Business Partner's and every panel member's calendar. The 3 times below are the only ones that work for everyone in the next 5 business days. Tap a tile to select — you'll review and confirm before your panel Teams meeting is created."
+                  error={confirmError}
+                />
+              )}
+
+            {/* ---------- "Round 2 scheduled" card — once R2 is booked. */}
+            {app.stage === "r2_scheduled" && (
+              <BookedInterviewCard
+                round="R2"
+                interview={app.interviews.find((i) => i.round === "R2") ?? null}
+                onReschedule={() => {
+                  setRescheduleError(null);
+                  setPendingReschedule("R2");
+                }}
+                error={rescheduleError && pendingReschedule === null ? rescheduleError : null}
+              />
+            )}
+
+            {/* ---------- Start R1 interview CTA ---------- */}
+            {app.stage === "r1_scheduled" && !app.r1_started && (
+              <div className="mt-4 bg-axis-canvas border-2 border-axis-magenta rounded-card p-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wider bg-axis-magenta text-white font-semibold px-2 py-0.5 rounded">
+                    Action needed from you
+                  </span>
+                </div>
+                <h2 className="text-base font-semibold text-axis-ink mt-2">
+                  Start your Round 1 interview
+                </h2>
+                <p className="text-xs text-axis-muted mt-1 max-w-2xl">
+                  Your Teams meeting is on your calendar (and your Business Partner's).
+                  When you click below, you'll begin a short conversational
+                  interview with a few role-related questions. We'll share
+                  your result on this page shortly after you finish.
+                </p>
+                {startR1Error && (
+                  <div className="mt-3 p-2 rounded bg-axis-pink-soft border border-axis-magenta text-xs text-axis-burgundy">
+                    {startR1Error}
+                  </div>
+                )}
+                <button
+                  onClick={() => {
+                    setStartR1Error(null);
+                    setPendingStartR1(true);
+                  }}
+                  disabled={startingR1}
+                  className="mt-4 bg-axis-magenta text-white text-sm font-semibold px-5 py-2.5 rounded shadow-card hover:bg-axis-burgundy transition disabled:opacity-50 disabled:cursor-wait"
+                >
+                  {startingR1 ? "Starting your interview…" : "Start my Round 1 interview →"}
+                </button>
+              </div>
+            )}
+
+            {/* ---------- R1 AI Interview report ----------
+                CONFIDENTIAL: this report (headline, score, recommendation,
+                rubric, transcript highlights) is the AI Interview Agent's
+                internal memo for the Business Partner and the R2 panel. It is
+                never shown on the candidate-facing /thrive/status page.
+                The candidate only sees the high-level "you cleared R1 /
+                R1 closed" outcome card above. */}
+
+            {/* ---------- Live activity feed ----------
+                HIDDEN on the candidate-facing page: this trace of
+                "agent did X, agent did Y" is an internal debugging view
+                for Business Partners / Ops and is not appropriate for
+                the candidate experience. The page already polls via
+                useAutoRefresh, so candidates still see their status
+                update live without needing a raw activity log. */}
+          </>
+        )}
+      </main>
+      <Footer />
+
+      {/* ----- Confirm dialogs (mounted once at the root) ----- */}
+      <ConfirmDialog
+        open={pendingR1Slot !== null && !!app}
+        title="Confirm your Round 1 interview slot"
+        message={
+          pendingR1Slot !== null && app ? (
+            <>
+              You're about to book{" "}
+              <strong className="text-axis-ink">
+                {formatSlotLong(app.proposed_r1_slots[pendingR1Slot])}
+              </strong>{" "}
+              for your Round 1 interview. This will create a real Microsoft
+              Teams meeting on your calendar and on your Business Partner's
+              calendar.
+            </>
+          ) : (
+            ""
+          )
+        }
+        consequences={[
+          "A Teams calendar invite is sent to you and your Business Partner immediately.",
+          "The other two proposed slots are released back to your Business Partner.",
+          "You can still reschedule later by replying to the invite.",
+        ]}
+        confirmLabel="Confirm and book"
+        onConfirm={async () => {
+          if (pendingR1Slot === null) return;
+          await onConfirmSlot(pendingR1Slot, "R1");
+          setPendingR1Slot(null);
+        }}
+        onCancel={() => setPendingR1Slot(null)}
+      />
+
+      <ConfirmDialog
+        open={pendingR2Slot !== null && !!app}
+        title="Confirm your Round 2 panel interview slot"
+        message={
+          pendingR2Slot !== null && app ? (
+            <>
+              You're about to book{" "}
+              <strong className="text-axis-ink">
+                {formatSlotLong(app.proposed_r2_slots[pendingR2Slot])}
+              </strong>{" "}
+              for your Round 2 panel interview. This will create a real
+              Microsoft Teams meeting on every panellist's calendar.
+            </>
+          ) : (
+            ""
+          )
+        }
+        consequences={[
+          "A Teams calendar invite is sent to you, your Business Partner and every panel member.",
+          "The panel will receive your Round 1 AI interview report ahead of the meeting.",
+          "Reschedule requests can be made via the calendar invite.",
+        ]}
+        confirmLabel="Confirm and book"
+        onConfirm={async () => {
+          if (pendingR2Slot === null) return;
+          await onConfirmSlot(pendingR2Slot, "R2");
+          setPendingR2Slot(null);
+        }}
+        onCancel={() => setPendingR2Slot(null)}
+      />
+
+      <ConfirmDialog
+        open={pendingReschedule !== null}
+        title={
+          pendingReschedule === "R1"
+            ? "Reschedule your Round 1 interview?"
+            : "Reschedule your Round 2 panel interview?"
+        }
+        message={
+          <>
+            Confirming will <strong>cancel the current Microsoft Teams meeting</strong>{" "}
+            on every attendee's calendar and we'll propose 3 fresh times
+            that work for everyone. You'll then pick a new time the same
+            way you did the first time.
+            <br />
+            <br />
+            <span className="text-axis-burgundy">
+              <strong>Cutoff:</strong> reschedules are only allowed up to{" "}
+              <strong>4 hours</strong> before the meeting starts. After that
+              you'll need to contact your Business Partner directly.
+            </span>
+          </>
+        }
+        consequences={[
+          "The existing Teams meeting is cancelled on every attendee's calendar (you, your Business Partner and — for R2 — every panellist).",
+          "We re-check everyone's availability in real time before proposing new times.",
+          "Your application stays on track — only the meeting is replaced.",
+        ]}
+        confirmLabel="Cancel meeting and propose new slots"
+        tone="danger"
+        onConfirm={async () => {
+          if (!app || !pendingReschedule) return;
+          try {
+            await api.rescheduleInterview(app.id, pendingReschedule);
+            await refresh();
+            setPendingReschedule(null);
+          } catch (e: any) {
+            // Surface the 4-hour cutoff message inline so the candidate
+            // sees exactly why the request was refused.
+            setRescheduleError(e?.message || String(e));
+            setPendingReschedule(null);
+          }
+        }}
+        onCancel={() => setPendingReschedule(null)}
+      />
+
+      <ConfirmDialog
+        open={pendingStartR1}
+        title="Start your Round 1 interview"
+        message={
+          <>
+            You're about to start your Round 1 interview. You'll answer a few
+            role-related questions out loud, and we'll share your result on
+            this page shortly after you finish.
+          </>
+        }
+        consequences={[
+          "Your responses and result are shared with your Business Partner.",
+          "Your application will pause for your Business Partner to confirm the panel for Round 2.",
+          "You can review your status on this page at any time.",
+        ]}
+        confirmLabel="Run Round 1 now"
+        onConfirm={async () => {
+          await onStartR1();
+          setPendingStartR1(false);
+        }}
+        onCancel={() => setPendingStartR1(false)}
+      />
+    </div>
+  );
+}
+
+/**
+ * Pretty long-form formatter used inside the confirm dialogs:
+ * "Tuesday, 07 April 2026 · 09:00–09:30 IST".
+ */
+function formatSlotLong(slot: { start: string; end: string }): string {
+  const start = new Date(slot.start);
+  const end = new Date(slot.end);
+  const date = start.toLocaleDateString(undefined, {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const t = (d: Date) =>
+    d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  return `${date} · ${t(start)}–${t(end)} IST`;
+}
+
+/**
+ * Self-contained slot picker tile grid.
+ *
+ * Behaviour: tiles are *radio buttons*, not action buttons. Tapping a tile
+ * highlights it (selectedIdx) but DOES NOT trigger any side effect. The
+ * parent component is responsible for opening the ConfirmDialog when
+ * selectedIdx changes from null. The user may also re-select a different
+ * tile or hit Cancel inside the dialog without losing their place.
+ */
+function SlotPickerCard({
+  round,
+  slots,
+  selectedIdx,
+  onSelect,
+  onClear,
+  title,
+  subtitle,
+  error,
+}: {
+  round: "R1" | "R2";
+  slots: { start: string; end: string }[];
+  selectedIdx: number | null;
+  onSelect: (idx: number) => void;
+  onClear: () => void;
+  title: string;
+  subtitle: string;
+  error: string | null;
+}) {
+  return (
+    <div className="mt-4 bg-axis-canvas border-2 border-axis-magenta rounded-card p-5">
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] uppercase tracking-wider bg-axis-magenta text-white font-semibold px-2 py-0.5 rounded">
+          Action needed from you
+        </span>
+        <span className="text-[10px] uppercase tracking-wider text-axis-muted">
+          Step · {round === "R1" ? "Schedule Round 1" : "Schedule Round 2"}
+        </span>
+      </div>
+      <h2 className="text-base font-semibold text-axis-ink mt-2">{title}</h2>
+      <p className="text-xs text-axis-muted mt-1 max-w-3xl">{subtitle}</p>
+
+      {error && (
+        <div className="mt-3 p-2 rounded bg-axis-pink-soft border border-axis-magenta text-xs text-axis-burgundy">
+          {error}
+        </div>
+      )}
+
+      <div
+        className="mt-4 grid sm:grid-cols-3 gap-3"
+        role="radiogroup"
+        aria-label={`${round} interview slots`}
+      >
+        {slots.map((slot, idx) => {
+          const start = new Date(slot.start);
+          const end = new Date(slot.end);
+          const isSelected = selectedIdx === idx;
+          return (
+            <button
+              key={idx}
+              role="radio"
+              aria-checked={isSelected}
+              onClick={() => onSelect(idx)}
+              className={`text-left p-3 rounded border-2 transition outline-none focus-visible:ring-2 focus-visible:ring-axis-magenta/50 ${
+                isSelected
+                  ? "border-axis-magenta bg-axis-pink-soft shadow-card"
+                  : "border-axis-divider hover:border-axis-magenta/60 hover:bg-axis-pink-soft/40"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+                  Slot {idx + 1}
+                </p>
+                {isSelected && (
+                  <span
+                    className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-axis-magenta text-white text-[10px] leading-none"
+                    aria-hidden
+                  >
+                    ✓
+                  </span>
+                )}
+              </div>
+              <p className="text-sm font-semibold text-axis-ink mt-1">
+                {start.toLocaleDateString(undefined, {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                })}
+              </p>
+              <p className="text-xs text-axis-ink-soft">
+                {start.toLocaleTimeString(undefined, {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}{" "}
+                –{" "}
+                {end.toLocaleTimeString(undefined, {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}{" "}
+                IST
+              </p>
+              <p className="mt-2 text-[10px] text-axis-magenta font-semibold">
+                {isSelected ? "Selected" : "Tap to select"}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mt-3 text-[11px] text-axis-muted">
+        Nothing is booked until you confirm in the next step. You can re-tap
+        a tile or cancel at any time.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * "Your interview is booked" card — replaces the SlotPickerCard once the
+ * Teams meeting actually exists. Shows the real date/time, a Join meeting
+ * button (deep-links into Teams), and a Reschedule button that's disabled
+ * inside the 4-hour cutoff window the backend enforces.
+ */
+function BookedInterviewCard({
+  round,
+  interview,
+  onReschedule,
+  error,
+}: {
+  round: "R1" | "R2";
+  interview: InterviewRecord | null;
+  onReschedule: () => void;
+  error: string | null;
+}) {
+  if (!interview || !interview.meeting_slot) {
+    return (
+      <div className="mt-4 bg-axis-canvas border border-axis-divider rounded-card p-5 text-sm text-axis-muted">
+        Loading interview details…
+      </div>
+    );
+  }
+
+  const start = new Date(interview.meeting_slot.start);
+  const end = new Date(interview.meeting_slot.end);
+  const now = new Date();
+  const hoursToStart = (start.getTime() - now.getTime()) / 3_600_000;
+  // Backend hard-cutoff is 4 hours; mirror it in the UI so the button
+  // disables itself before the user even tries.
+  const RESCHEDULE_CUTOFF_HOURS = 4;
+  const canReschedule = hoursToStart > RESCHEDULE_CUTOFF_HOURS;
+  const dateLabel = start.toLocaleDateString(undefined, {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const t = (d: Date) =>
+    d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  const timeLabel = `${t(start)} – ${t(end)} IST`;
+  const roundLabel = round === "R1" ? "Round 1" : "Round 2 panel";
+
+  return (
+    <div className="mt-4 bg-axis-canvas border-2 border-emerald-500/60 rounded-card p-5">
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] uppercase tracking-wider bg-emerald-600 text-white font-semibold px-2 py-0.5 rounded">
+          Confirmed · on your calendar
+        </span>
+        <span className="text-[10px] uppercase tracking-wider text-axis-muted">
+          {roundLabel} interview
+        </span>
+      </div>
+
+      <h2 className="text-lg font-semibold text-axis-ink mt-2">
+        Your {roundLabel} interview is booked
+      </h2>
+
+      <div className="mt-4 grid sm:grid-cols-2 gap-4">
+        <div>
+          <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+            When
+          </p>
+          <p className="text-base font-semibold text-axis-ink mt-0.5">
+            {dateLabel}
+          </p>
+          <p className="text-sm text-axis-ink-soft">{timeLabel}</p>
+        </div>
+        <div>
+          <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+            Where
+          </p>
+          <p className="text-sm text-axis-ink mt-0.5">Microsoft Teams meeting</p>
+          {interview.teams_join_url ? (
+            <a
+              href={interview.teams_join_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-1 text-sm font-semibold text-axis-magenta hover:underline break-all"
+            >
+              Join the Teams meeting →
+            </a>
+          ) : (
+            <p className="text-xs text-axis-muted mt-1">
+              Join link will appear in your Outlook calendar invite.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {error && (
+        <div className="mt-4 p-2 rounded bg-axis-pink-soft border border-axis-magenta text-xs text-axis-burgundy">
+          {error}
+        </div>
+      )}
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-axis-divider pt-4">
+        <button
+          type="button"
+          onClick={onReschedule}
+          disabled={!canReschedule}
+          className="px-3 py-1.5 text-xs font-semibold rounded border border-axis-magenta text-axis-magenta hover:bg-axis-pink-soft disabled:opacity-40 disabled:cursor-not-allowed"
+          title={
+            canReschedule
+              ? "Cancel this meeting and pick a new slot"
+              : `Reschedules are locked within ${RESCHEDULE_CUTOFF_HOURS} hours of the meeting — contact your Business Partner`
+          }
+        >
+          Reschedule
+        </button>
+        {canReschedule ? (
+          <p className="text-[11px] text-axis-muted">
+            You can reschedule up to{" "}
+            <strong className="text-axis-ink">
+              {RESCHEDULE_CUTOFF_HOURS} hours
+            </strong>{" "}
+            before the meeting starts.
+          </p>
+        ) : (
+          <p className="text-[11px] text-axis-burgundy">
+            Inside the {RESCHEDULE_CUTOFF_HOURS}-hour cutoff. To change the
+            meeting now, please contact your Business Partner directly.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Inline card that fetches the structured AI Interview Agent report after R1
+ * and renders it for the candidate (and is the same data the panel reads
+ * before R2 — full transparency).
+ */
+function R1ReportCard({ appId, stage }: { appId: string; stage: FunnelStage }) {
+  const [report, setReport] = useState<InterviewReport | null>(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    // The report only exists from R1_DONE onwards.
+    const ready =
+      stage === "r1_done" ||
+      stage === "r2_scheduled" ||
+      stage === "offer_negotiation" ||
+      stage === "offer";
+    if (!ready) {
+      setReport(null);
+      return;
+    }
+    let cancelled = false;
+    api
+      .getR1Report(appId)
+      .then((r) => {
+        if (!cancelled) setReport(r);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [appId, stage]);
+
+  if (!report) return null;
+
+  return (
+    <div className="mt-4 bg-axis-canvas border border-axis-divider rounded-card shadow-card p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold">
+            AI Interview Agent · Round 1 report
+          </p>
+          <h2 className="text-base font-semibold text-axis-ink mt-1">
+            {report.headline}
+          </h2>
+          <p className="text-xs text-axis-muted mt-1">
+            Overall <strong className="text-axis-ink">{report.overall_score.toFixed(0)}/100</strong>
+            {" · "}
+            Recommendation:{" "}
+            <span
+              className={`font-semibold ${
+                report.recommendation === "advance"
+                  ? "text-emerald-700"
+                  : report.recommendation === "borderline"
+                  ? "text-amber-700"
+                  : "text-axis-burgundy"
+              }`}
+            >
+              {report.recommendation}
+            </span>
+          </p>
+        </div>
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="text-[10px] uppercase tracking-wider text-axis-magenta hover:underline whitespace-nowrap"
+        >
+          {open ? "Hide details" : "Show details"}
+        </button>
+      </div>
+
+      {open && (
+        <div className="mt-4 grid md:grid-cols-2 gap-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold mb-2">
+              Per-skill rubric
+            </p>
+            <ul className="space-y-1">
+              {Object.entries(report.rubric_scores).map(([skill, val]) => (
+                <li key={skill} className="text-xs text-axis-ink-soft flex justify-between">
+                  <span>{skill}</span>
+                  <span
+                    className={`font-semibold ${
+                      val >= 80 ? "text-emerald-700" : val >= 50 ? "text-amber-700" : "text-axis-burgundy"
+                    }`}
+                  >
+                    {val.toFixed(0)}/100
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {report.red_flags.length > 0 && (
+              <>
+                <p className="text-[10px] uppercase tracking-wider text-axis-burgundy font-semibold mt-4 mb-2">
+                  Red flags
+                </p>
+                <ul className="space-y-1 list-disc list-inside text-xs text-axis-ink-soft">
+                  {report.red_flags.map((flag, i) => (
+                    <li key={i}>{flag}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold mb-2">
+              Transcript highlights
+            </p>
+            <ul className="space-y-3">
+              {report.transcript_highlights.map((h, i) => (
+                <li key={i} className="text-xs text-axis-ink-soft">
+                  <p className="italic border-l-2 border-axis-magenta pl-2">"{h.quote}"</p>
+                  <p className="text-axis-muted mt-1">{h.why_it_matters}</p>
+                </li>
+              ))}
+            </ul>
+            <p className="text-[10px] uppercase tracking-wider text-axis-magenta font-semibold mt-4 mb-2">
+              Recommended probes for R2 panel
+            </p>
+            <ul className="space-y-1 list-disc list-inside text-xs text-axis-ink-soft">
+              {report.recommended_probes.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

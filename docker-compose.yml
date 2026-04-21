@@ -1,0 +1,189 @@
+# =============================================================================
+# Axis Demo — Root Docker Compose
+# =============================================================================
+#
+# Services
+# --------
+#   acs-backend   FastAPI backend for Axis Hiring Agent   → localhost:8100
+#   acs-frontend  Next.js frontend for Axis Hiring Agent  → localhost:3000
+#   vi-backend    Virtual Interviewer FastAPI + ML         → localhost:8101
+#   vi-frontend   xchat-ui  Next.js (pnpm)                → localhost:3001
+#
+# Profiles (use --profile <name> to scope commands)
+# --------------------------------------------------
+#   acs           acs-backend + acs-frontend
+#   vi            vi-backend  + vi-frontend
+#   (no profile)  all services
+#
+# Quick-start examples
+# --------------------
+#   Build all :          docker compose build
+#   Start all :          docker compose up -d
+#
+#   Build ACS only:      docker compose --profile acs build
+#   Start ACS only:      docker compose --profile acs up -d
+#
+#   Build VI only:       docker compose --profile vi build
+#   Start VI only:       docker compose --profile vi up -d
+#
+#   Build single svc:    docker compose build acs-backend
+#   Start single svc:    docker compose up -d acs-backend
+#
+#   Rebuild + restart:   docker compose up -d --build <service>
+#   Logs:                docker compose logs -f [service]
+#   Stop all:            docker compose down
+# =============================================================================
+
+name: axis-demo
+
+# ---------------------------------------------------------------------------
+# Shared network — all containers talk to each other by service name
+# ---------------------------------------------------------------------------
+networks:
+  axis-net:
+    driver: bridge
+
+# ---------------------------------------------------------------------------
+# Named volumes for persistent data
+# ---------------------------------------------------------------------------
+volumes:
+  vi-interview-data:
+  vi-mcp-data:
+  vi-logs:
+
+    # =============================================================================
+    # Services
+    # =============================================================================
+services:
+
+  # -------------------------------------------------------------------------
+  # 1. ACS Backend — FastAPI (Python 3.11)
+  #    Internal port : 8000
+  #    Host port     : 8100
+  #    Profile       : acs
+  # -------------------------------------------------------------------------
+  acs-backend:
+    build:
+      context: ./axis-hiring-agent-backend-acs
+      dockerfile: Dockerfile
+    image: axis-demo/acs-backend:latest
+    container_name: axis-acs-backend
+    profiles: [ acs ]
+    restart: unless-stopped
+    ports:
+      - "8100:8000"
+    networks:
+      - axis-net
+    env_file:
+      - ./axis-hiring-agent-backend-acs/.env
+    environment:
+      # Override the VI URL so it resolves via Docker network
+      VIRTUAL_INTERVIEWER_URL: http://vi-backend:8000
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  # -------------------------------------------------------------------------
+  # 2. ACS Frontend — Next.js (Node 20)
+  #    Internal port : 3000
+  #    Host port     : 3000
+  #    Profile       : acs
+  # -------------------------------------------------------------------------
+  acs-frontend:
+    build:
+      context: ./axis-hiring-agent-acs
+      dockerfile: Dockerfile
+      args:
+        # API URL seen by the browser (must be a host-visible address)
+        NEXT_PUBLIC_API_BASE: http://localhost:8100
+    image: axis-demo/acs-frontend:latest
+    container_name: axis-acs-frontend
+    profiles: [ acs ]
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - axis-net
+    depends_on:
+      - acs-backend
+
+  # -------------------------------------------------------------------------
+  # 3. Virtual Interviewer Backend — FastAPI + CV/ML (Python 3.11)
+  #    Internal port : 8000
+  #    Host port     : 8101
+  #    Profile       : vi
+  # -------------------------------------------------------------------------
+  vi-backend:
+    build:
+      context: ./virtual-interviewer
+      dockerfile: Dockerfile
+    image: axis-demo/vi-backend:latest
+    container_name: axis-vi-backend
+    profiles: [ vi ]
+    restart: unless-stopped
+    ports:
+      - "8101:8000"
+    networks:
+      - axis-net
+    env_file:
+      - ./virtual-interviewer/.env
+    environment:
+      TF_ENABLE_ONEDNN_OPTS: 0
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      # Redis connection (Internal network)
+      REDIS_HOST: axis-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      REDIS_SSL: "false"
+    volumes:
+      # Persist interview recordings and data across restarts
+      - vi-interview-data:/app/interview_data
+      - vi-mcp-data:/app/mcp_data
+      - vi-logs:/app/logs
+    depends_on:
+      - axis-redis
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')" ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s # ML libs take time to load
+
+  axis-redis:
+    image: redis:7-alpine
+    container_name: axis-redis
+    restart: always
+    networks:
+      - axis-net
+    profiles: [ vi ]
+
+  # -------------------------------------------------------------------------
+  # 4. Virtual Interviewer Frontend — xchat-ui Next.js (pnpm)
+  #    Internal port : 3000
+  #    Host port     : 3001
+  #    Profile       : vi
+  # -------------------------------------------------------------------------
+  # vi-frontend:
+  #   build:
+  #     context: ./virtual-interviewer
+  #     dockerfile: Dockerfile
+  #   image: axis-demo/vi-frontend:latest
+  #   container_name: axis-vi-frontend
+  #   profiles: [ vi ]
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3001:3000"
+  #   networks:
+  #     - axis-net
+  #   environment:
+  #     NODE_ENV: production
+  #     # Point xchat-ui at the VI backend (host-visible, since Next.js
+  #     # public vars are embedded at build time — use ARG in Dockerfile
+  #     # if you need a build-time override)
+  #     NEXT_PUBLIC_VI_API_BASE: http://localhost:8101
+  #   depends_on:
+  #     - vi-backend

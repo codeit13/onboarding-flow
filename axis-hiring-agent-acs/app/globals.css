@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@400;500;600&display=swap");
+
+/* ---------------------------------------------------------------------------
+ * Axis Bank brand tokens — synced from the official `index.css` shipped by
+ * the Axis design team (2026-04-08). These are exposed as CSS custom
+ * properties ONLY; the existing tailwind utility classes (`bg-axis-burgundy`,
+ * `text-axis-magenta`, etc.) continue to resolve through `tailwind.config.ts`
+ * so no existing component visually shifts. Treat the variables below as
+ * the new source of truth — any future component should reference
+ * `hsl(var(--primary))` directly so we stay aligned with the Axis design
+ * library going forward. THIS BLOCK MUST NEVER OVERRIDE A TAILWIND TOKEN.
+ * ------------------------------------------------------------------------ */
+:root {
+  color-scheme: light;
+
+  /* Axis Bank Color Theme (canonical) */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 13%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 13%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 13%;
+  /* Primary Burgundy from Axis logo: #AE275F == hsl(338 62% 42%) */
+  --primary: 338 62% 42%;
+  --primary-foreground: 0 0% 98%;
+  /* Secondary Ruby/Pink: #EB1165 == hsl(335 86% 50%) */
+  --secondary: 335 86% 50%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 338 50% 95%;
+  --accent-foreground: 338 62% 42%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 338 62% 42%;
+  --radius: 0.5rem;
+
+  /* Typography stack — Inter for UI, Fraunces for the editorial display
+     headings already used via the `font-display` Tailwind utility. Pinned
+     here so any plain HTML element (e.g. raw `<select>`, `<input>`) inherits
+     the same UI face instead of falling back to the OS serif. */
+  --font-sans: "Inter", "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Playfair Display", Georgia, serif;
+}
+
+body {
+  @apply bg-axis-canvas text-axis-ink font-sans antialiased;
+  font-family: var(--font-sans);
+}
+
+/* Force native form controls to inherit the Axis UI font instead of the
+ * platform default — this is the source of the "fonts look inconsistent"
+ * feedback from the design team because Chromium ships <select>/<input>/
+ * <button> with `font: -webkit-small-control` by default. */
+input, select, textarea, button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Branded scrollbars from official index.css — visual polish only,
+ * no layout / functional impact. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(338 62% 42% / 0.3) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: hsl(338 62% 42% / 0.3);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(338 62% 42% / 0.5);
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 200ms ease-out;
+}

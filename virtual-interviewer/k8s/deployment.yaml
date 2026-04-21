@@ -1,0 +1,72 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: ${APP_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: ${APP_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${APP_NAME}
+    spec:
+      containers:
+      - name: ${APP_NAME}
+        image: ${IMAGE_NAME}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000 
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+        env:
+          - name: OPENAI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: env-xchat
+                key: OPENAI_API_KEY
+          - name: DEEPGRAM_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: env-virtual-interviewer
+                key: DEEPGRAM_API_KEY
+          - name: HOST
+            valueFrom:
+              secretKeyRef:
+                name: env-virtual-interviewer
+                key: HOST
+          - name: PORT
+            valueFrom:
+              secretKeyRef:
+                name: env-virtual-interviewer
+                key: PORT
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: env-virtual-interviewer
+                key: REDIS_HOST
+          - name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                name: env-virtual-interviewer
+                key: REDIS_PORT
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: env-virtual-interviewer
+                key: REDIS_PASSWORD
+
+
+
+
+
+
+
+          

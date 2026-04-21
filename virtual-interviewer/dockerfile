@@ -1,0 +1,105 @@
+# Use slim base image
+FROM python:3.11-slim AS builder
+
+# Set working directory
+WORKDIR /app
+
+# build argumentS
+ARG APP_NAME
+# ARG ARM_CLIENT_ID
+# ARG ARM_TENANT_ID
+# ARG ARM_CLIENT_SECRET
+# ARG ARM_SUBSCRIPTION_ID
+# ARG DOCKER_USERNAME
+
+# environment variableS for the container
+ENV APP_NAME=$APP_NAME
+# ENV AZURE_CLIENT_ID=$ARM_CLIENT_ID
+# ENV AZURE_TENANT_ID=$ARM_TENANT_ID
+# ENV AZURE_CLIENT_SECRET=$ARM_CLIENT_SECRET
+# ENV AZURE_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID
+# ENV DOCKER_USERNAME=$DOCKER_USERNAME
+
+RUN echo "App Name is: $APP_NAME"
+
+
+# Install dependencies and create a virtual environment
+COPY requirements.txt .
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    libffi-dev \
+    libpq-dev \
+    libpq5 \
+    libgl1 \
+    libglib2.0-0 \
+    python3-dev && \
+    python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /var/lib/apt/lists/*
+
+# Remove unnecessary files from the installed packages
+RUN find /opt/venv -type f -name '*.pyc' -delete
+RUN find /opt/venv -type d -name '__pycache__' -exec rm -rf {} +
+RUN find /opt/venv/lib/python3.11/site-packages -type d -name "tests" -exec rm -rf {} +
+# RUN find /opt/venv/lib/python3.11/site-packages -type d -name "docs" -exec rm -rf {} +
+RUN rm -rf /root/.cache /var/cache/*
+
+# Final Stage - Copy only necessary files
+FROM python:3.11-slim AS final
+
+# Set working directory
+WORKDIR /app
+
+# build argumentS
+ARG APP_NAME
+# ARG ARM_CLIENT_ID
+# ARG ARM_TENANT_ID
+# ARG ARM_CLIENT_SECRET
+# ARG ARM_SUBSCRIPTION_ID
+# ARG DOCKER_USERNAME
+
+# environment variableS for the container
+ENV APP_NAME=$APP_NAME
+# ENV AZURE_CLIENT_ID=$ARM_CLIENT_ID
+# ENV AZURE_TENANT_ID=$ARM_TENANT_ID
+# ENV AZURE_CLIENT_SECRET=$ARM_CLIENT_SECRET
+# ENV AZURE_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID
+# ENV DOCKER_USERNAME=$DOCKER_USERNAME
+
+# Copy the virtual environment from the builder stage
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy only necessary application files
+COPY . .
+
+RUN echo "App Name is: $APP_NAME"
+
+RUN python custom_path.py
+
+# Use the virtual environment in runtime
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Remove unnecessary tools to save space
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    libgl1 \
+    libglib2.0-0 \
+    cmake \
+    build-essential && \
+    rm -rf /usr/share/doc /usr/share/man /usr/share/locale && \
+    rm -rf /usr/local/lib/python3.11/distutils && \
+    rm -rf /usr/local/lib/python3.11/site-packages/pip && \
+    rm -rf /usr/local/lib/python3.11/site-packages/setuptools && \
+    rm -rf /usr/local/lib/python3.11/site-packages/wheel
+
+# Remove cache and temporary files
+RUN rm -rf /tmp/* /var/tmp/* /root/.cache
+
+# expose port 8000
+EXPOSE 8000 
+
+# Set entrypoint
+CMD ["python", "main.py"]

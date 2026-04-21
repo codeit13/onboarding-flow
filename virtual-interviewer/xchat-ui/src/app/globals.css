@@ -1,0 +1,796 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--x-grey-000);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--x-grey-200);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--x-grey-000) transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  height: 100vh;
+  overflow: hidden;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --x-grey-000: #cccccc;
+  --x-grey-100: #444444;
+  --x-grey-200: #333333;
+  --x-grey-300: #2e2e2e;
+  --x-grey-700: #1e1e1e;
+  --x-grey-300-50: rgba(46, 46, 46, 0.5);
+  --x-grey-400: rgba(30, 30, 30);
+  --x-grey-400-80: rgba(30, 30, 30, 0.8);
+  --x-grey-500: #555555;
+  --x-grey-600: rgba(245, 245, 245, 0.8);
+  --x-grey-800: #3e3e3e;
+  --x-blue-100: #0070c0;
+  --x-blue-200: #0d779d;
+  --x-orange-100: #b36200;
+  --x-orange-200: #cf4a0e;
+  --x-orange-300: #ffbc40;
+  --x-red-100: #ff6a6a;
+  --x-red-200: #d04436;
+  --x-red-300: #ff9797;
+  --x-white-100: #ffffff;
+  --x-white-200: #f5f5f5;
+  --x-white-200-50: rgba(245, 245, 245, 0.5);
+  --x-white-300: #f2f2f2;
+  --x-white-400: #eeeeee;
+  --x-white-500: rgb(234, 234, 234);
+  --x-white-500-10: rgba(234, 234, 234, 0.1);
+  --x-white-500-20: rgba(234, 234, 234, 0.2);
+  --x-white-500-60: rgba(234, 234, 234, 0.6);
+  --x-white-600-50: rgba(234, 234, 234, 0.5);
+  --x-white-500-30: rgba(234, 234, 234, 0.3);
+  --x-white-500-80: rgba(234, 234, 234, 0.8);
+  --x-white-600: #cccccc;
+  --x-white-600-10: rgba(204, 204, 204, 0.1);
+  --x-white-600-30: rgba(204, 204, 204, 0.3);
+  --x-white-700: #bbbbbb;
+  --x-white-800: #5a5a5a;
+  --x-white-900: #666666;
+  --x-white-1000: #f1f1f1;
+  --x-white-1000-10: rgba(241, 241, 241, 0.1);
+  --x-white-1100: #f7f8fc;
+  --x-white-1200: #757575;
+  --x-purple-100: #e6a1db;
+  --x-purple-200: #6c1d5f;
+  --x-purple-300: #4a1e47;
+  --x-purple-400: #6a1d57;
+  --x-purple-100-04: rgba(108, 29, 95, 0.04);
+  --x-purple-200-06: rgba(230, 161, 219, 0.06);
+  --x-green-100: #06a99c;
+  --x-green-200: #034a44;
+  --x-green-300: #16a34a;
+  --x-green-400: #4fcd7d;
+  --dark-bg-color: #292a45;
+  --dark-bg-color-100: #202123;
+  --dark-300: #303153;
+  --indicator-custom-bot-background-color: var(--x-green-100);
+  --indicator-background-color: var(--x-purple-200);
+  --modal-overlay-color: var(--x-white-500-80);
+  --tooltip-background-color: white;
+  --tooltip-text-color: var(--x-grey-300);
+  --tooltip-border-color: var(--x-white-500-10);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+::selection {
+  background-color: var(--x-purple-300);
+  color: white;
+}
+
+.dark ::selection {
+  background-color: var(--x-purple-100);
+  color: black;
+}
+
+.dark {
+  --background: #171717;
+  --foreground: #ffffff;
+  --indicator-background-color: var(--x-purple-100);
+  --modal-overlay-color: var(--x-grey-400-80);
+  --tooltip-background-color: var(--x-grey-300);
+  --tooltip-text-color: var(--x-white-600);
+  --tooltip-border-color: var(--x-white-500-10);
+}
+
+/* Add these custom utility classes for your specific opacity needs */
+.bg-xPurple300-10 {
+  background-color: rgba(74, 30, 71, 0.1); /* 10% opacity of x-purple-300 */
+}
+
+.bg-xPurple300-20 {
+  background-color: rgba(74, 30, 71, 0.2); /* 20% opacity of x-purple-300 */
+}
+
+.tooltip-container .tooltip {
+  padding: 0.2rem 0.375rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  background-color: var(--tooltip-background-color);
+  color: var(--tooltip-text-color);
+  border: solid 1px var(--tooltip-border-color);
+  box-shadow: 0px 8px 18px -6px rgba(24, 39, 75, 0.12);
+}
+
+.border,
+.border-y,
+.border-t,
+.border-b,
+.border-x {
+  @apply dark:border-xWhite500-10;
+}
+
+/* Base Markdown Content */
+.markdown-content {
+  line-height: 1.6;
+  /* font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif; */
+  color: var(--foreground);
+  font-size: 1rem;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* Headings */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--foreground);
+}
+
+.markdown-content h1 {
+  font-size: 1.875rem;
+  border-bottom: 1px solid var(--x-white-500);
+  padding-bottom: 0.375rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--x-white-500);
+  padding-bottom: 0.25rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.125rem;
+}
+
+/* Paragraphs and spacing */
+.markdown-content p {
+  margin-bottom: 1.25rem;
+}
+
+/* Code blocks */
+.markdown-content pre {
+  background-color: var(--x-white-200);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--x-white-500);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.markdown-content pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--foreground);
+  display: block;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+/* Inline code */
+.markdown-content code {
+  background-color: var(--x-white-200);
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.3rem;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.875em;
+  color: var(--x-orange-200);
+  /* border: 1px solid var(--x-white-500); */
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+  border-left: 4px solid var(--x-white-500);
+  padding: 0.5rem 1rem;
+  color: var(--x-grey-100);
+  background-color: var(--x-white-200-50);
+  margin: 1.25rem 0;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.markdown-content blockquote p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Horizontal Rule */
+.markdown-content hr {
+  height: 1px;
+  background-color: var(--x-white-500);
+  border: none;
+  margin: 2rem 0;
+}
+
+/* Links */
+.markdown-content a {
+  color: var(--x-blue-100);
+  text-decoration: none;
+  border-bottom: 1px solid var(--x-white-500-30);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.markdown-content a:hover {
+  color: var(--x-blue-200);
+  border-bottom-color: var(--x-blue-200);
+}
+
+/* Lists */
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-content ul li,
+.markdown-content ol li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+/* Nested lists */
+.markdown-content ul ul,
+.markdown-content ol ul {
+  list-style-type: circle;
+  margin-top: 0.5rem;
+}
+
+.markdown-content ul ol,
+.markdown-content ol ol {
+  list-style-type: lower-alpha;
+  margin-top: 0.5rem;
+}
+
+/* Tables */
+.markdown-content table {
+  border-collapse: separate;
+  width: 100%;
+  margin: 1.5rem 0;
+  border-spacing: 0;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  border: 1px solid var(--x-white-500);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 150px;
+}
+
+.markdown-content table th {
+  background-color: var(--x-white-200);
+  font-weight: 600;
+  border-bottom-width: 2px;
+}
+
+.markdown-content table tr:nth-child(even) {
+  background-color: var(--x-white-1000-10);
+}
+
+.markdown-content table tr:hover {
+  background-color: var(--x-white-200-50);
+}
+
+/* Images */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1.25rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode overrides */
+.dark .markdown-content {
+  color: var(--x-white-500);
+}
+
+.dark .markdown-content h1,
+.dark .markdown-content h2,
+.dark .markdown-content h3,
+.dark .markdown-content h4,
+.dark .markdown-content h5,
+.dark .markdown-content h6 {
+  color: var(--x-white-500);
+  border-bottom-color: var(--x-grey-100);
+}
+
+.dark .markdown-content pre {
+  background-color: var(--x-grey-300);
+  border-color: var(--x-grey-100);
+}
+
+.dark .markdown-content pre code {
+  color: var(--x-white-200);
+}
+
+.dark .markdown-content code {
+  background-color: var(--x-grey-300);
+  color: var(--x-red-300);
+  border-color: var(--x-grey-100);
+}
+
+.dark .markdown-content blockquote {
+  border-left-color: var(--x-grey-100);
+  color: var(--x-white-600);
+  background-color: var(--x-grey-300-50);
+}
+
+.dark .markdown-content hr {
+  background-color: var(--x-grey-100);
+}
+
+.dark .markdown-content a {
+  color: var(--x-blue-100);
+  border-bottom-color: var(--x-white-500-30);
+}
+
+.dark .markdown-content a:hover {
+  color: var(--x-blue-100);
+  border-bottom-color: var(--x-blue-100);
+}
+
+.dark .markdown-content table th,
+.dark .markdown-content table td {
+  border-color: var(--x-grey-100);
+}
+
+.dark .markdown-content table th {
+  background-color: var(--x-grey-300);
+}
+
+.dark .markdown-content table tr:nth-child(even) {
+  background-color: var(--x-grey-300-50);
+}
+
+.dark .markdown-content table tr:hover {
+  background-color: var(--x-grey-800);
+}
+
+/* Code syntax highlighting - simulated */
+.markdown-content .token.comment,
+.markdown-content .token.prolog,
+.markdown-content .token.doctype,
+.markdown-content .token.cdata {
+  color: var(--x-white-900);
+}
+
+.markdown-content .token.punctuation {
+  color: var(--x-white-900);
+}
+
+.markdown-content .token.property,
+.markdown-content .token.tag,
+.markdown-content .token.boolean,
+.markdown-content .token.number,
+.markdown-content .token.constant {
+  color: var(--x-orange-200);
+}
+
+.markdown-content .token.symbol,
+.markdown-content .token.deleted {
+  color: var(--x-red-200);
+}
+
+.markdown-content .token.selector,
+.markdown-content .token.attr-name,
+.markdown-content .token.string,
+.markdown-content .token.char,
+.markdown-content .token.builtin {
+  color: var(--x-green-100);
+}
+
+.dark .markdown-content .token.comment,
+.dark .markdown-content .token.prolog,
+.dark .markdown-content .token.doctype,
+.dark .markdown-content .token.cdata {
+  color: var(--x-white-700);
+}
+
+.dark .markdown-content .token.punctuation {
+  color: var(--x-white-700);
+}
+
+.dark .markdown-content .token.property,
+.dark .markdown-content .token.tag,
+.dark .markdown-content .token.boolean,
+.dark .markdown-content .token.number,
+.dark .markdown-content .token.constant {
+  color: var(--x-orange-300);
+}
+
+.dark .markdown-content .token.symbol,
+.dark .markdown-content .token.deleted {
+  color: var(--x-red-100);
+}
+
+.dark .markdown-content .token.selector,
+.dark .markdown-content .token.attr-name,
+.dark .markdown-content .token.string,
+.dark .markdown-content .token.char,
+.dark .markdown-content .token.builtin {
+  color: var(--x-green-400);
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #24292e;
+  background: none;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  font-size: 0.875rem;
+  tab-size: 2;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 1em;
+  margin: 0;
+  overflow: auto;
+  border-radius: 0.25rem;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: 0.2em 0.4em;
+  margin: 0;
+  border-radius: 0.25rem;
+  white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a737d;
+}
+
+.token.punctuation {
+  color: #24292e;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #005cc5;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #032f62;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.token.variable {
+  color: #e36209;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+  color: #6f42c1;
+}
+
+.token.keyword {
+  color: #d73a49;
+}
+
+.token.regex,
+.token.important {
+  color: #e36209;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* Dark theme overrides */
+.dark code[class*="language-"],
+.dark pre[class*="language-"] {
+  color: #e1e4e8;
+}
+
+.dark .token.comment,
+.dark .token.prolog,
+.dark .token.doctype,
+.dark .token.cdata {
+  color: #8b949e;
+}
+
+.dark .token.punctuation {
+  color: #e1e4e8;
+}
+
+.dark .token.property,
+.dark .token.tag,
+.dark .token.boolean,
+.dark .token.number,
+.dark .token.constant,
+.dark .token.symbol {
+  color: #79b8ff;
+}
+
+.dark .token.selector,
+.dark .token.attr-name,
+.dark .token.string,
+.dark .token.char,
+.dark .token.builtin {
+  color: #85e89d;
+}
+
+.dark .token.operator,
+.dark .token.entity,
+.dark .token.url,
+.dark .language-css .token.string,
+.dark .token.variable {
+  color: #ffab70;
+}
+
+.dark .token.atrule,
+.dark .token.attr-value,
+.dark .token.function,
+.dark .token.class-name {
+  color: #b392f0;
+}
+
+.dark .token.keyword {
+  color: #f97583;
+}
+
+.dark .token.regex,
+.dark .token.important {
+  color: #ffab70;
+}
+
+/* Line numbers - optional */
+pre[class*="language-"].line-numbers {
+  position: relative;
+  padding-left: 3.8em;
+  counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+  position: relative;
+  white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em; /* works for line-numbers below 1000 lines */
+  letter-spacing: -1px;
+  border-right: 1px solid #999;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: #999;
+  display: block;
+  padding-right: 0.8em;
+  text-align: right;
+}
+/* Add these styles to your global CSS file to fix code wrapping in markdown */
+
+/* Update pre and code blocks in markdown content */
+.markdown-content pre {
+  white-space: pre-wrap !important; /* Allow pre blocks to wrap */
+  word-wrap: break-word !important; /* Break words as needed */
+  overflow-x: auto; /* Add horizontal scrollbar only if needed */
+  max-width: 100%; /* Ensure it doesn't go beyond container */
+}
+
+.markdown-content code {
+  white-space: pre-wrap !important; /* Allow code to wrap */
+  word-wrap: break-word !important; /* Break words as needed */
+  word-break: break-all; /* Break anywhere if needed */
+  overflow-wrap: break-word !important; /* Modern browsers */
+  hyphens: auto; /* Enable hyphenation for very long words */
+  max-width: 100%; /* Ensure it doesn't go beyond container */
+}
+
+/* Ensure all text elements in markdown content wrap properly */
+.markdown-content p,
+.markdown-content li,
+.markdown-content blockquote,
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6,
+.markdown-content td,
+.markdown-content th {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100%;
+}
+
+/* Fix for table cells */
+.markdown-content table {
+  table-layout: fixed; /* Fixed table layout for better cell control */
+  width: 100%;
+}
+
+.markdown-content table td,
+.markdown-content table th {
+  word-break: break-word; /* Break words only when necessary */
+  overflow-wrap: break-word;
+}
+
+/* Fix specifically for inline code in ReactMarkdown */
+.markdown-content :not(pre) > code {
+  word-break: break-all;
+  white-space: pre-wrap !important;
+}
+
+.MuiDataGrid-columnHeaders,
+.MuiDataGrid-columnHeadersInner,
+.MuiDataGrid-columnHeader,
+.MuiDataGrid-columnHeader:focus,
+.MuiDataGrid-columnHeader--sorted,
+.MuiDataGrid-columnHeader:active {
+  background: #4a1e47 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  border-bottom: 2px solid #4a1e47 !important;
+}
+
+.MuiDataGrid-virtualScroller {
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE 10+ */
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+}
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* Remove the right gap in the header */
+.MuiDataGrid-columnHeaders {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+.MuiDataGrid-toolbarContainer {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 16px !important;
+  padding: 10px 18px !important;
+  min-height: 36px !important;
+}

@@ -1,0 +1,1641 @@
+{
+  "applications": {
+    "app-c90f64cd": {
+      "id": "app-c90f64cd",
+      "candidate_id": "EMP11023",
+      "job_id": "job-590321",
+      "match_percent": 5.0,
+      "match_rationale": "Matched 0/6 required skills (none). Missing: casa cross-sell, corporate salary acquisition, kyc compliance, portfolio sales, relationship management, stakeholder management. Tenure 7.1y (+5pp).",
+      "matched_skills": [],
+      "missing_skills": [
+        "casa cross-sell",
+        "corporate salary acquisition",
+        "kyc compliance",
+        "portfolio sales",
+        "relationship management",
+        "stakeholder management"
+      ],
+      "stage": "offer",
+      "agent_status": "waiting_candidate_acceptance",
+      "next_action": "Final offer rolled out \u2014 awaiting your acceptance. Please accept or decline from the Thrive portal.",
+      "pending_blocking_items": [
+        "[R2/pre] Business Partner approved panel composition"
+      ],
+      "candidate_kind": "internal",
+      "source": "organic",
+      "source_pool_id": null,
+      "source_row_id": null,
+      "search_query": null,
+      "recommendation_source": null,
+      "proposed_r1_slots": [
+        {
+          "start": "2026-04-16T10:30:00",
+          "end": "2026-04-16T11:00:00"
+        },
+        {
+          "start": "2026-04-16T14:45:00",
+          "end": "2026-04-16T15:15:00"
+        },
+        {
+          "start": "2026-04-16T17:30:00",
+          "end": "2026-04-16T18:00:00"
+        }
+      ],
+      "selected_r1_slot_index": 0,
+      "proposed_r2_slots": [
+        {
+          "start": "2026-04-17T13:15:00",
+          "end": "2026-04-17T14:00:00"
+        },
+        {
+          "start": "2026-04-17T16:00:00",
+          "end": "2026-04-17T16:45:00"
+        },
+        {
+          "start": "2026-04-20T11:00:00",
+          "end": "2026-04-20T11:45:00"
+        }
+      ],
+      "selected_r2_slot_index": 0,
+      "hr_screening_decision": "advance",
+      "selected_r2_panel_id": "panel-bdm-central",
+      "r1_started": true,
+      "created_at": "2026-04-15T09:52:34.032801+05:30",
+      "updated_at": "2026-04-15T09:53:46.567370+05:30",
+      "offer_proposed_ctc_lpa": 42.0,
+      "offer_negotiation_notes": "[seed] CTC negotiated at \u20b942 LPA fixed + 15% variable + joining bonus",
+      "offer_rolled_out": true,
+      "offer_rolled_out_at": "2026-04-15T04:23:46.276707",
+      "offer_rolled_out_by": "offer_team@axisbank.test",
+      "offer_accepted": false,
+      "offer_accepted_at": null,
+      "offer_declined": false,
+      "offer_declined_reason": null,
+      "withdrawn": false,
+      "withdrawn_reason": null,
+      "withdrawn_at": null,
+      "candidate_phone": null,
+      "expected_joining_date": null,
+      "engagement_journey_id": null,
+      "events": [
+        {
+          "at": "2026-04-15T09:52:34.032850+05:30",
+          "actor": "candidate",
+          "message": "Clicked Apply on RB-LS:Business Development Manager - Corporate Salary Relationship (Bhopal)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:34.032900+05:30",
+          "actor": "agent",
+          "message": "Scored profile vs JD: 5% \u2014 Matched 0/6 required skills (none). Missing: casa cross-sell, corporate salary acquisition, kyc compliance, portfolio sales, relationship management, stakeholder management. Tenure 7.1y (+5pp).",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:34.033255+05:30",
+          "actor": "agent",
+          "message": "Fetching Thrive profile (KRAs, skills catalogue, tenure)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:36.538288+05:30",
+          "actor": "agent",
+          "message": "Matching 6 required skill(s) against your Thrive profile",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:39.039593+05:30",
+          "actor": "agent",
+          "message": "Screening 0 matched skill(s) against JD rubric",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:41.349648+05:30",
+          "actor": "agent",
+          "message": "Screening match 5% < threshold 75% \u2014 emailed full AI screening report to Business Partner meera.nair@Xebia192.onmicrosoft.com for review.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:41.349744+05:30",
+          "actor": "agent",
+          "message": "Notified Business Partner: Screening review needed \u2014 Priya Nair scored 5% on RB-LS:Business Development Manager - Corporate Salary Relationship (threshold 75%). Advance or regret on the Business Partner page.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:41.349765+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for HR: AI screening complete \u2014 Business Partner to review the rubric breakdown and decide whether to advance the candidate to Round 1 or regret them.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:41.349952+05:30",
+          "actor": "hr_partner",
+          "message": "[seed] Screening advanced for offer-ready demo",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:41.350064+05:30",
+          "actor": "agent",
+          "message": "Fetching Thrive profile (KRAs, skills catalogue, tenure)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:43.855187+05:30",
+          "actor": "agent",
+          "message": "Matching 6 required skill(s) against your Thrive profile",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:46.358363+05:30",
+          "actor": "agent",
+          "message": "Screening 0 matched skill(s) against JD rubric",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:48.362951+05:30",
+          "actor": "agent",
+          "message": "Stage applied \u2192 screened | next: HR override \u2014 preparing outreach with proposed slots",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:48.362997+05:30",
+          "actor": "agent",
+          "message": "Business Partner overrode the 75% threshold \u2014 advancing Priya Nair to Round 1 despite a 5% AI screening score.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:48.363158+05:30",
+          "actor": "agent",
+          "message": "Instantiated R1 pre checklist (6 items)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:50.955276+05:30",
+          "actor": "agent",
+          "message": "Intersected calendars of 2 attendees (priya.nair@axisbank.test, meera.nair@Xebia192.onmicrosoft.com) \u2014 found 3 common R1 slots",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:51.241051+05:30",
+          "actor": "agent",
+          "message": "Outreach email sent with 3 proposed slots (thread thr-39118d67)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:51.241147+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/pre/Candidate Thrive profile + KRAs attached to meeting brief",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:51.241170+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/pre/JD and required-skills list loaded into AI interviewer",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:51.241190+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/pre/Joining instructions email sent",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:51.241206+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for candidate: Waiting for you to confirm your preferred Round 1 interview slot",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:51.241427+05:30",
+          "actor": "candidate",
+          "message": "Confirmed Round 1 slot Thu 16 Apr 10:30 IST",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138331+05:30",
+          "actor": "agent",
+          "message": "Teams meeting created AAMkADY4ZGU0YjZmLTM3ODMtNDI5NC1hMzBkLTUxNzQ0MDBkNDBjYwBGAAAAAAB28rc4buE6TqusMRyh-RSIBwA8M6Fprsw_So04uMxP_SM9AAAAAAENAAA8M6Fprsw_So04uMxP_SM9AAAFbzw4AAA= for 2026-04-16T10:30:00",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138398+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/pre/Candidate confirmed slot via email",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138421+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/pre/Teams meeting link sent to candidate + Business Partner",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138519+05:30",
+          "actor": "agent",
+          "message": "Stage screened \u2192 r1_scheduled | next: R1 AI interview \u00b7 Thu 16 Apr 10:30 IST",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138677+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for candidate: Click 'Start interview' on your status page to begin Round 1",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138736+05:30",
+          "actor": "candidate",
+          "message": "Started Round 1 AI interview",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138858+05:30",
+          "actor": "agent",
+          "message": "R1 started \u2014 pausing orchestrator until the AI Interview Agent finishes capturing the candidate's answers",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138875+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for candidate: AI Interview Agent is in session with the candidate",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.138957+05:30",
+          "actor": "agent",
+          "message": "[seed] Canned R1 transcript injected for offer-ready demo",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:54.139063+05:30",
+          "actor": "agent",
+          "message": "Transcript captured \u2014 scoring against JD rubric",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:52:56.142797+05:30",
+          "actor": "agent",
+          "message": "R1 scored 44/100 \u2014 Covered 2/6 required skills (corporate salary acquisition, relationship management). Depth 16/20, evidence 8/15, engagement 0/5.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:40.759545+05:30",
+          "actor": "agent",
+          "message": "R1 report ready: High-caliber candidate with demonstrated CASA growth strategy, compliance integrity, and coaching acumen \u2014 strong fit for BDM Corporate Salary role. (recommendation: advance)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:40.759758+05:30",
+          "actor": "agent",
+          "message": "Instantiated R1 post checklist (4 items)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:40.759821+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/post/Transcript captured and stored",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:40.759847+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/post/Claude scored transcript against JD rubric",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:40.759879+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/post/Pass/fail decision recorded",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.037695+05:30",
+          "actor": "agent",
+          "message": "Emailed full R1 AI analysis to Business Partner meera.nair@Xebia192.onmicrosoft.com (score 44/100, AI recommendation: advance)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.037863+05:30",
+          "actor": "agent",
+          "message": "Notified Business Partner: R1 AI interview complete \u2014 score 44/100 (advance). Review transcript and decide R2 vs regret.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.037931+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R1/post/Business Partner notified of outcome",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.038010+05:30",
+          "actor": "agent",
+          "message": "Stage r1_scheduled \u2192 r1_done | next: AI Interview Agent finished \u2014 awaiting HR review of transcript and AI report",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.038397+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for HR: AI Interview Agent finished Round 1 \u2014 Business Partner to review the transcript and AI report, then advance to Round 2 or regret.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.038605+05:30",
+          "actor": "hr_partner",
+          "message": "Unblocked agent after HR checklist tick",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.038987+05:30",
+          "actor": "agent",
+          "message": "Instantiated R2 pre checklist (6 items)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:41.039049+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/pre/R1 transcript + score attached to invite",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:43.146867+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/pre/Common free slot found across panel + candidate",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:43.146891+05:30",
+          "actor": "agent",
+          "message": "Intersected calendars of 5 attendees (rajesh.menon@stub.local, suresh.kumar@Xebia192.onmicrosoft.com, meera.nair@Xebia192.onmicrosoft.com, priya.shah@stub.local, priya.nair@axisbank.test) \u2014 found 3 common R2 slots",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:43.414537+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for candidate: Waiting for you to confirm your preferred Round 2 panel slot",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:43.414940+05:30",
+          "actor": "candidate",
+          "message": "Confirmed Round 2 slot Fri 17 Apr 13:15 IST",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.274629+05:30",
+          "actor": "agent",
+          "message": "R2 Teams meeting booked \u2014 invite sent to 5 attendees: rajesh.menon@stub.local, suresh.kumar@Xebia192.onmicrosoft.com, meera.nair@Xebia192.onmicrosoft.com, priya.shah@stub.local, priya.nair@axisbank.test",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.274759+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/pre/Teams meeting created + all invited",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.274791+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/pre/Panel briefing doc shared 24h before",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.274816+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/pre/Feedback form link attached to invite",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.275062+05:30",
+          "actor": "agent",
+          "message": "Stage r1_done \u2192 r2_scheduled | next: R2 panel \u00b7 Fri 17 Apr 13:15 IST \u2014 awaiting panel feedback",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.275384+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for panel feedback: Awaiting panel feedback",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276134+05:30",
+          "actor": "agent",
+          "message": "Instantiated R2 post checklist (4 items)",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276172+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/post/All panellists submitted feedback",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276193+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/post/Consolidated recommendation produced",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276204+05:30",
+          "actor": "agent",
+          "message": "R2 panel voting complete \u2014 3/3 votes in. Agent-suggested verdict: offer (Panel majority positive (R1 82, R2 avg 91)). Awaiting HR decision.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276253+05:30",
+          "actor": "agent",
+          "message": "Notified Business Partner: R2 panel voting complete \u2014 HR decision required. Agent-suggested verdict: offer.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276273+05:30",
+          "actor": "agent",
+          "message": "Paused \u2014 waiting for HR: Panel voting complete \u2014 HR decision required on R2",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276500+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/post/Final decision recorded",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276530+05:30",
+          "actor": "agent",
+          "message": "Stage r2_scheduled \u2192 offer_negotiation | next: HR approved the offer \u2014 Offer Discussion Team to negotiate final CTC",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276562+05:30",
+          "actor": "agent",
+          "message": "Checklist \u2713 R2/post/Candidate notified",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276572+05:30",
+          "actor": "hr_partner",
+          "message": "HR approved offer after panel review (agent suggested: offer) \u2014 handing off to Offer Discussion Team",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276619+05:30",
+          "actor": "agent",
+          "message": "Notified Business Partner: HR approved offer \u2014 application is now with the Offer Discussion Team.",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.276733+05:30",
+          "actor": "agent",
+          "message": "Stage offer_negotiation \u2192 offer | next: Final offer rolled out at \u20b942 per annum by Offer Discussion Team",
+          "level": "info"
+        },
+        {
+          "at": "2026-04-15T09:53:46.567313+05:30",
+          "actor": "offer_team",
+          "message": "Offer Discussion Team rolled out the final offer at \u20b942/yr \u2014 formal offer email sent to priya.nair@axisbank.test.",
+          "level": "info"
+        }
+      ],
+      "interviews": [
+        {
+          "id": "AAMkADY4ZGU0YjZmLTM3ODMtNDI5NC1hMzBkLTUxNzQ0MDBkNDBjYwBGAAAAAAB28rc4buE6TqusMRyh-RSIBwA8M6Fprsw_So04uMxP_SM9AAAAAAENAAA8M6Fprsw_So04uMxP_SM9AAAFbzw4AAA=",
+          "application_id": "app-c90f64cd",
+          "round": "R1",
+          "teams_meeting_id": "AAMkADY4ZGU0YjZmLTM3ODMtNDI5NC1hMzBkLTUxNzQ0MDBkNDBjYwBGAAAAAAB28rc4buE6TqusMRyh-RSIBwA8M6Fprsw_So04uMxP_SM9AAAAAAENAAA8M6Fprsw_So04uMxP_SM9AAAFbzw4AAA=",
+          "teams_join_url": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_OWUwZGNlZmUtMjlmYy00NjMzLThhM2YtMGY3N2FhOWY1N2Jl%40thread.v2/0?context=%7b%22Tid%22%3a%229c171396-dae7-4f1d-8c09-6d3c97337ff8%22%2c%22Oid%22%3a%22d8e8671a-5cf4-4872-989d-d848994604b3%22%7d",
+          "meeting_slot": {
+            "start": "2026-04-16T10:30:00",
+            "end": "2026-04-16T11:00:00"
+          },
+          "transcript": [
+            {
+              "speaker": "interviewer",
+              "text": "Walk me through how you would grow CASA and HNI relationships in a flagship branch in Pune West.",
+              "at": "2026-04-15T04:22:54.138924"
+            },
+            {
+              "speaker": "candidate",
+              "text": "I would anchor growth on three pillars: first, segmenting the existing book by wallet-share potential and running a 60-day Burgundy upgrade sprint; second, activating the corporate salary tie-ups already in the catchment for family accounts; third, tightening KYC-compliant onboarding turnaround to under 30 minutes so referrals convert before the weekend.",
+              "at": "2026-04-15T04:22:54.138924"
+            },
+            {
+              "speaker": "interviewer",
+              "text": "Tell me about a difficult regulatory or compliance call you made at your previous branch.",
+              "at": "2026-04-15T04:22:54.138924"
+            },
+            {
+              "speaker": "candidate",
+              "text": "When RBI tightened beneficial-ownership norms in 2024 we had 14 HNI files with gaps. I paused disbursement on two and re-ran KYC walk-throughs with the clients personally. Lost one relationship short-term but the audit closed clean and the same client came back six months later.",
+              "at": "2026-04-15T04:22:54.138924"
+            },
+            {
+              "speaker": "interviewer",
+              "text": "How do you coach a relationship manager whose CASA numbers are slipping?",
+              "at": "2026-04-15T04:22:54.138924"
+            },
+            {
+              "speaker": "candidate",
+              "text": "I pull the activity log first \u2014 calls made, meetings booked, mandates offered \u2014 before touching numbers. Usually the pipeline is leaking at the discovery step, not at close. We co-run three live client meetings, I demo the mandate framing, and then set a 2-week activity-first target with a daily 10-minute standup.",
+              "at": "2026-04-15T04:22:54.138924"
+            }
+          ],
+          "score": 82.0,
+          "rationale": "Covered 2/6 required skills (corporate salary acquisition, relationship management). Depth 16/20, evidence 8/15, engagement 0/5.",
+          "panel_feedback": [],
+          "report": {
+            "application_id": "app-c90f64cd",
+            "round": "R1",
+            "headline": "High-caliber candidate with demonstrated CASA growth strategy, compliance integrity, and coaching acumen \u2014 strong fit for BDM Corporate Salary role.",
+            "overall_score": 82.0,
+            "recommendation": "advance",
+            "rubric_scores": {
+              "corporate salary acquisition": 78.0,
+              "relationship management": 92.0,
+              "portfolio sales": 85.0,
+              "stakeholder management": 72.0,
+              "KYC compliance": 95.0,
+              "CASA cross-sell": 88.0
+            },
+            "transcript_highlights": [
+              {
+                "quote": "I paused disbursement on two and re-ran KYC walk-throughs with the clients personally. Lost one relationship short-term but the audit closed clean and the same client came back six months later.",
+                "why_it_matters": "This answer reveals that the candidate prioritizes regulatory integrity over short-term revenue \u2014 a critical quality for a BDM handling HNI and corporate salary accounts under RBI scrutiny. The willingness to absorb a short-term relationship loss for compliance correctness is exactly the disposition Axis Bank needs in a flagship branch manager. The fact that the client returned also demonstrates the candidate's long-term relationship philosophy.",
+                "sentiment": "positive",
+                "quote_hi": null,
+                "why_it_matters_hi": null
+              },
+              {
+                "quote": "I would anchor growth on three pillars: first, segmenting the existing book by wallet-share potential and running a 60-day Burgundy upgrade sprint; second, activating the corporate salary tie-ups already in the catchment for family accounts; third, tightening KYC-compliant onboarding turnaround to under 30 minutes so referrals convert before the weekend.",
+                "why_it_matters": "The candidate immediately referenced Axis Bank's Burgundy segment by name, showing product familiarity beyond generic banking knowledge. The three-pillar framework is structured, executable, and directly maps to the JD's CASA cross-sell and corporate salary acquisition requirements. The 30-minute onboarding turnaround target shows operational precision and an understanding of conversion drop-off risk.",
+                "sentiment": "positive",
+                "quote_hi": null,
+                "why_it_matters_hi": null
+              },
+              {
+                "quote": "I pull the activity log first \u2014 calls made, meetings booked, mandates offered \u2014 before touching numbers. Usually the pipeline is leaking at the discovery step, not at close.",
+                "why_it_matters": "This coaching response demonstrates data-driven people management rather than reactive performance pressure \u2014 a sign of a mature sales leader. Identifying the 'discovery step' as the leak point shows sophisticated sales-process diagnosis, which is critical for a BDM who must drive team productivity in corporate salary acquisition. The co-running of live client meetings as a coaching tool also signals hands-on leadership style.",
+                "sentiment": "positive",
+                "quote_hi": null,
+                "why_it_matters_hi": null
+              }
+            ],
+            "red_flags": [
+              "No evidence of direct corporate empanelment experience: When asked how they would grow CASA and corporate salary relationships, the candidate described activating 'existing catchment tie-ups' as a future strategy rather than recounting a past corporate empanelment they personally executed. For a role whose title is 'Corporate Salary Relationship,' the absence of even one concrete example of signing an employer MOU, running an on-site salary account drive, or converting a corporate mandate from scratch is a notable gap that must be addressed in Round 2.",
+              "Stakeholder management entirely untested: None of the three interview questions elicited any response about managing internal or external stakeholders \u2014 regional managers, HR heads of corporate clients, product specialists, or compliance officers. This is a required skill per the JD, and the interview did not surface it. This is partly an interviewer design gap, but the candidate also had natural openings (e.g., the compliance question) to reference cross-functional stakeholder coordination and did not.",
+              "Geographic mismatch between role (Bhopal) and example (Pune West): The candidate's strategic answer was framed around a Pune West flagship branch scenario. While this may simply reflect the interviewer's hypothetical framing, the Business Partner should confirm the candidate is genuinely committed to and knowledgeable about the Bhopal market \u2014 including its corporate catchment profile, dominant employer clusters, and competitive landscape \u2014 rather than transplanting a metro playbook to a Tier-2 city context."
+            ],
+            "recommended_probes": [
+              "Corporate empanelment depth probe: Ask the candidate to walk through a specific corporate salary empanelment they personally led from end to end \u2014 from identifying the employer prospect, to meeting the HR/finance head, to executing the MOU, to running the employee onboarding drive, to measuring first-month salary credit conversion. A strong answer will include specific employer names or sectors (even anonymized), the number of accounts activated, and at least one obstacle they navigated (e.g., incumbent bank resistance, employee skepticism). This will confirm whether the candidate can anchor t",
+              "Stakeholder management scenario probe: Present the candidate with this scenario \u2014 'Your top corporate client's salary credits are delayed by two days due to a back-office processing error. The client's CFO is threatening to move mandates to a competitor. Walk us through exactly what you do in the next four hours.' A strong answer will demonstrate simultaneous management of the client relationship (empathy, interim solution), internal escalation (ops, branch head, regional), and a remediation commitment with a timeline. This tests whether the candidate can manage upward and laterally under pres",
+              "Bhopal market knowledge probe: Ask the candidate to name the top three corporate salary catchments in Bhopal \u2014 by sector or employer \u2014 and describe how they would prioritize their first 90-day outreach plan in that market. A strong answer will reference Bhopal-specific employers (government/PSU sector, pharma, IT campuses, educational institutions), acknowledge differences from a metro market, and demonstrate that the candidate has done pre-interview research on the territory. A weak answer will give a generic Tier-1 city playbook, signaling the candidate has not seriously considered the role'"
+            ],
+            "generated_at": "2026-04-15T09:53:40.759473+05:30",
+            "transcript_language": "en",
+            "headline_hi": null,
+            "red_flags_hi": [],
+            "recommended_probes_hi": []
+          },
+          "pasted_transcript": null,
+          "ai_recommendation": null,
+          "pasted_transcripts_by_panellist": {},
+          "ai_recommendations_by_panellist": {},
+          "acs_call_id": null,
+          "acs_state": null,
+          "virtual_interview_session_id": null,
+          "virtual_interview_state": "completed",
+          "language": "en"
+        },
+        {
+          "id": "AAMkADY4ZGU0YjZmLTM3ODMtNDI5NC1hMzBkLTUxNzQ0MDBkNDBjYwBGAAAAAAB28rc4buE6TqusMRyh-RSIBwA8M6Fprsw_So04uMxP_SM9AAAAAAENAAA8M6Fprsw_So04uMxP_SM9AAAFbzw5AAA=",
+          "application_id": "app-c90f64cd",
+          "round": "R2",
+          "teams_meeting_id": "AAMkADY4ZGU0YjZmLTM3ODMtNDI5NC1hMzBkLTUxNzQ0MDBkNDBjYwBGAAAAAAB28rc4buE6TqusMRyh-RSIBwA8M6Fprsw_So04uMxP_SM9AAAAAAENAAA8M6Fprsw_So04uMxP_SM9AAAFbzw5AAA=",
+          "teams_join_url": "https://teams.microsoft.com/l/meetup-join/19%3ameeting_M2ZlNTk1MTAtYzc4Ni00ZWJmLTkxMTYtYWIxYTJkOTYyMjhm%40thread.v2/0?context=%7b%22Tid%22%3a%229c171396-dae7-4f1d-8c09-6d3c97337ff8%22%2c%22Oid%22%3a%22d8e8671a-5cf4-4872-989d-d848994604b3%22%7d",
+          "meeting_slot": {
+            "start": "2026-04-17T13:15:00",
+            "end": "2026-04-17T14:00:00"
+          },
+          "transcript": [],
+          "score": null,
+          "rationale": null,
+          "panel_feedback": [
+            {
+              "panellist_id": "suresh.kumar@Xebia192.onmicrosoft.com",
+              "panellist_name": "Suresh Kumar",
+              "score": 92.0,
+              "strengths": "Deep wealth / HNI relationships in west India, clean regulatory record, calm presence.",
+              "concerns": "Minor \u2014 could stretch on CASA analytics depth.",
+              "recommendation": "strong_hire",
+              "submitted_at": "2026-04-15T04:23:46.275635"
+            },
+            {
+              "panellist_id": "rajesh.menon@stub.local",
+              "panellist_name": "Rajesh Menon",
+              "score": 89.0,
+              "strengths": "Deep wealth / HNI relationships in west India, clean regulatory record, calm presence.",
+              "concerns": "Minor \u2014 could stretch on CASA analytics depth.",
+              "recommendation": "hire",
+              "submitted_at": "2026-04-15T04:23:46.275683"
+            },
+            {
+              "panellist_id": "priya.shah@stub.local",
+              "panellist_name": "Priya Shah",
+              "score": 93.0,
+              "strengths": "Deep wealth / HNI relationships in west India, clean regulatory record, calm presence.",
+              "concerns": "Minor \u2014 could stretch on CASA analytics depth.",
+              "recommendation": "strong_hire",
+              "submitted_at": "2026-04-15T04:23:46.275696"
+            }
+          ],
+          "report": null,
+          "pasted_transcript": "Panel: Thanks for joining. Walk us through your last 12 months in role \u2014 what were the two or three things you owned end-to-end?\nCandidate: Sure. The biggest one was the Burgundy upgrade drive \u2014 we had ~280 mass-affluent customers sitting just below the Burgundy AUM threshold. I built a daily call-list off the CRM, paired each RM with a portfolio analyst, and we ran a 90-day push. We converted 71 of them, which added about \u20b984 crore in book value. The second was a CASA acquisition tie-up with three local CA firms \u2014 that gave us 140 new current accounts in Q3. And the third was cleaning up our KYC re-verification backlog; we were running at 11% non-compliant and we got it under 2% in two quarters.\n\nPanel: On the Burgundy push \u2014 what did you do when an RM pushed back saying the customer wasn't ready?\nCandidate: Two things. First, I asked the RM to walk me through the last three conversations on the CRM notes. Usually it was a pricing objection, not a readiness issue. Second, if the customer genuinely wasn't ready, I had the RM mark them in a \"nurture\" bucket with a 60-day follow-up \u2014 I did not want them to feel hounded. The point of the drive was to find the customers who were already there mentally, not to force-fit anyone.\n\nPanel: How do you think about cross-sell without it becoming pushy?\nCandidate: I think the line is whether the next product solves a real problem the customer has already told you about. If a customer mentions their daughter's college admission, that's a goal \u2014 an SIP or an education loan is a fit. If they haven't told you anything and you're just hitting a target, the customer can smell it. I track cross-sell quality by the 6-month retention of the second product, not the day-one sale.\n\nPanel: Tell us about a time you disagreed with your zonal head.\nCandidate: Last year my zonal head wanted me to shut down our Saturday open-house at the branch \u2014 footfall was lower than weekday and he wanted the staff cost back. I pulled the data and showed that 60% of our Burgundy upgrades in Q2 had their first meaningful conversation on a Saturday. I asked for one more quarter to prove it, with a clear KPI \u2014 if Saturday conversions dropped below 40% I'd shut it myself. He agreed. The number held at 58%, and we kept it.\n\nPanel: You'd be moving markets for this role. What's your read on the new geography versus your current one?\nCandidate: It's structurally different \u2014 more government employees, less SME density, and the affluent base is older. I'd expect the Burgundy playbook to work but slower, and I'd expect CASA acquisition to be harder because the SME pipeline is thinner. I'd want to spend the first 30 days riding along with the existing RMs before I change anything. I'd be cautious about importing my current plan wholesale.\n\nPanel: A regulatory question \u2014 if you spotted a suspected mis-selling complaint on a ULIP sold by one of your RMs, what's the first thing you do?\nCandidate: First, I pull the call recording and the needs-analysis form and read both before I talk to anyone. Second, I loop in compliance \u2014 same day, in writing \u2014 even before I talk to the RM, because the RM conversation has to be witnessed. Third, I call the customer myself, acknowledge the concern, and explain the grievance redressal path. I don't try to \"save\" the sale at that point; the priority is protecting the customer and the bank.\n\nPanel: One last one \u2014 what's a weakness you're actively working on?\nCandidate: I am not great at delegating analytics work. I tend to pull the data myself because I trust my own SQL more than the dashboards. It's slower and it doesn't scale. I've started forcing myself to write the question down and hand it to my MIS analyst, even when I know I could pull it in five minutes. I've kept it up for about three months now.\n\nPanel: Thanks, that's all from us. Anything you want to ask?\nCandidate: Two questions \u2014 what does the panel see as the single biggest risk to the book in the next 12 months, and how is the bank thinking about the role of branch managers as more of the routine business moves to the app?\n",
+          "ai_recommendation": null,
+          "pasted_transcripts_by_panellist": {
+            "suresh.kumar@Xebia192.onmicrosoft.com": "Hiring Manager: Walk me through the single most important number on your branch P&L last year and what you did about it.\nCandidate: It was the cost-to-income ratio \u2014 we were sitting at 56%. I cut it to 49% over three quarters. Two moves: I renegotiated the AMC on the cash-handling vendor (saved ~\u20b914L) and I shifted three FTEs from teller work into RM-assist roles after we pushed transactions to the app.\n\nHiring Manager: How did the team take the FTE shift?\nCandidate: Two of them were nervous because they had been tellers for 8+ years. I sat with each of them for an hour, walked through what RM-assist would actually look like day-to-day, and committed to a 60-day buddy programme. One of them is now my best lead-qualifier.\n\nHiring Manager: This role has a P0 on Burgundy AUM growth in a slower geography. What's your 30-day plan?\nCandidate: 30 days, I don't change anything. I sit with the top 3 RMs, ride along on 10 customer meetings, read the last 6 months of CRM notes, and pull the pipeline by stage. I want to know where the leakage is before I touch the playbook. Day 31 I put out a hypothesis with the team, not a directive.\n\nHiring Manager: If I told you your AUM target was 20% higher than what's on the JD, what would you push back on?\nCandidate: I'd ask for two things \u2014 a clear view of which customer segments the extra 20% is supposed to come from, and either a headcount add or a cost-per-lead budget for an outbound campaign. I would not just absorb it silently, because then the team carries the stress and you lose trust.\n\nHiring Manager: Why are you actually leaving your current role?\nCandidate: I am not running from anything. I have hit the ceiling in my current zone \u2014 the book is mature, the team is steady, and there is not much left for me to learn there. I want a market where I have to rebuild the playbook, not run someone else's.\n",
+            "rajesh.menon@stub.local": "Interviewer: Let's go technical. Walk me through how you read a branch P&L \u2014 what are the first three lines you look at?\nCandidate: NII first, because it tells me whether the asset and liability mix is actually working. Then fee income split \u2014 I want to know if it is concentrated in two products or spread. Third, provisions and write-offs against the prior four quarters; if provisions are spiking, something in the underwriting is off.\n\nInterviewer: A customer walks in with a \u20b92 crore inward remittance flagged by AML. What is your sequence?\nCandidate: I do not release the funds. I pull the source-of-funds documents, the customer's risk rating, and the past six months of account activity. I escalate to the branch compliance officer the same day with a written note. If the customer is on the floor, I tell them politely that we are running a standard verification and we will revert within 24 to 48 hours. I do not let an RM \"handle it\" off-record.\n\nInterviewer: What's your read on RBI's recent priority sector lending tweaks for MSME?\nCandidate: The shift to weighted-asset categorisation is going to push more banks toward smaller-ticket MSME loans because the weighting is friendlier. For a branch like mine, that means I need my RM team trained on the under-\u20b950L MSME segment specifically \u2014 that's where the volume is going to come from, and we are not great at it yet.\n\nInterviewer: How comfortable are you with Finacle and our CRM stack?\nCandidate: Finacle every day for 7 years \u2014 TD opening, lien marking, NEFT/RTGS overrides, the whole thing. CRM I'm strong on the lead-management module and the activity tracker. Where I'm weaker is the analytics dashboard \u2014 I tend to pull reports through the MIS team rather than running them myself. I'm working on it.\n\nInterviewer: One regulatory miss in your career \u2014 what was it and what did you change after?\nCandidate: An RM on my team booked a SIP for a senior citizen without filing the suitability assessment. I caught it on the monthly audit. I self-reported to compliance, refunded the customer, and rebuilt our pre-sale checklist so suitability is a hard gate in the CRM, not a paper form. Zero repeats since.\n",
+            "priya.shah@stub.local": "Interviewer: If you had to pick one customer segment to double down on for this branch in the next 12 months, which one and why?\nCandidate: NRI \u2014 specifically Gulf-returning families in the 35 to 50 bracket. They come back with a corpus, they need an account opened fast, they need investment advice, and they almost always have a property purchase planned in the first 18 months. If I get the first conversation right, I get the home loan, the SIP, the insurance, and the children's education plan. It's the highest lifetime-value cohort in this geography.\n\nInterviewer: Where would you NOT play?\nCandidate: I would not chase ultra-HNI in this market \u2014 the wealth-management infrastructure is not strong enough yet and we'd lose the customer to a private bank within a year. I'd rather refer them upstream to the central wealth team than half-deliver in branch.\n\nInterviewer: How do you think about branch versus app cannibalisation?\nCandidate: The app is a feature, not a competitor. The transactions that move to the app \u2014 balance check, fund transfer, mini statement \u2014 were never the high-value moments anyway. What stays in the branch is the conversation. My job is to make sure the customer who walks in actually gets a conversation, not a queue ticket.\n\nInterviewer: A peer branch manager poaches one of your top RMs. What do you do?\nCandidate: First, I ask the RM honestly why they were open to it \u2014 usually it is not money, it is a manager problem or a growth problem on my side. If it's something I can fix, I fix it and I tell them what changed. If they still want to go, I let them go cleanly and I help them transition \u2014 banking is small, you'll work with them again. I do not get into a counter-offer war.\n\nInterviewer: Where do you want to be in five years?\nCandidate: Cluster head, ideally in a market I have built from a single branch. I want the operating experience of running 8 to 12 branches before I take any central role. I'm not in a rush to leave the field.\n"
+          },
+          "ai_recommendations_by_panellist": {},
+          "acs_call_id": null,
+          "acs_state": null,
+          "virtual_interview_session_id": null,
+          "virtual_interview_state": null,
+          "language": "en"
+        }
+      ],
+      "checklists": [
+        {
+          "id": "chk-app-c90f64cd-R1-pre",
+          "application_id": "app-c90f64cd",
+          "round": "R1",
+          "phase": "pre",
+          "items": [
+            {
+              "id": "pre-r1-1",
+              "label": "Candidate confirmed slot via email",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Candidate confirmed slot",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:22:54.138384"
+            },
+            {
+              "id": "pre-r1-2",
+              "label": "Teams meeting link sent to candidate + Business Partner",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Teams link: https://teams.microsoft.com/l/meetup-join/19%3ameeting_OWUwZGNlZmUtMjlmYy00NjMzLThhM2YtMGY3N2FhOWY1N2Jl%40thread.v2/0?context=%7b%22Tid%22%3a%229c171396-dae7-4f1d-8c09-6d3c97337ff8%22%2c%22Oid%22%3a%22d8e8671a-5cf4-4872-989d-d848994604b3%22%7d",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:22:54.138414"
+            },
+            {
+              "id": "pre-r1-3",
+              "label": "Candidate Thrive profile + KRAs attached to meeting brief",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Profile + KRAs attached",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:22:51.241138"
+            },
+            {
+              "id": "pre-r1-4",
+              "label": "JD and required-skills list loaded into AI interviewer",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Required skills loaded into rubric",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:22:51.241163"
+            },
+            {
+              "id": "pre-r1-5",
+              "label": "Business Partner acknowledged outreach plan",
+              "blocking": false,
+              "done": false,
+              "owner": "hr_partner",
+              "note": null,
+              "ticked_by": null,
+              "ticked_at": null
+            },
+            {
+              "id": "pre-r1-6",
+              "label": "Joining instructions email sent",
+              "blocking": false,
+              "done": true,
+              "owner": "agent",
+              "note": "Joining instructions in body",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:22:51.241184"
+            }
+          ]
+        },
+        {
+          "id": "chk-app-c90f64cd-R1-post",
+          "application_id": "app-c90f64cd",
+          "round": "R1",
+          "phase": "post",
+          "items": [
+            {
+              "id": "post-r1-1",
+              "label": "Transcript captured and stored",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Transcript saved to InterviewRecord",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:40.759810"
+            },
+            {
+              "id": "post-r1-2",
+              "label": "Claude scored transcript against JD rubric",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Scored via JD rubric",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:40.759840"
+            },
+            {
+              "id": "post-r1-3",
+              "label": "Pass/fail decision recorded",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Score 44/100 \u2014 awaiting HR decision",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:40.759872"
+            },
+            {
+              "id": "post-r1-4",
+              "label": "Business Partner notified of outcome",
+              "blocking": false,
+              "done": true,
+              "owner": "agent",
+              "note": null,
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:41.037923"
+            }
+          ]
+        },
+        {
+          "id": "chk-app-c90f64cd-R2-pre",
+          "application_id": "app-c90f64cd",
+          "round": "R2",
+          "phase": "pre",
+          "items": [
+            {
+              "id": "pre-r2-1",
+              "label": "R1 transcript + score attached to invite",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "R1 score + transcript attached",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:41.039016"
+            },
+            {
+              "id": "pre-r2-2",
+              "label": "Business Partner approved panel composition",
+              "blocking": true,
+              "done": false,
+              "owner": "hr_partner",
+              "note": null,
+              "ticked_by": null,
+              "ticked_at": null
+            },
+            {
+              "id": "pre-r2-3",
+              "label": "Common free slot found across panel + candidate",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "3 common slots found across 5 attendees",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:43.146846"
+            },
+            {
+              "id": "pre-r2-4",
+              "label": "Teams meeting created + all invited",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Teams: https://teams.microsoft.com/l/meetup-join/19%3ameeting_M2ZlNTk1MTAtYzc4Ni00ZWJmLTkxMTYtYWIxYTJkOTYyMjhm%40thread.v2/0?context=%7b%22Tid%22%3a%229c171396-dae7-4f1d-8c09-6d3c97337ff8%22%2c%22Oid%22%3a%22d8e8671a-5cf4-4872-989d-d848994604b3%22%7d",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.274744"
+            },
+            {
+              "id": "pre-r2-5",
+              "label": "Panel briefing doc shared 24h before",
+              "blocking": false,
+              "done": true,
+              "owner": "agent",
+              "note": "Panel briefing attached",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.274785"
+            },
+            {
+              "id": "pre-r2-6",
+              "label": "Feedback form link attached to invite",
+              "blocking": false,
+              "done": true,
+              "owner": "agent",
+              "note": "Feedback form link embedded",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.274809"
+            }
+          ]
+        },
+        {
+          "id": "chk-app-c90f64cd-R2-post",
+          "application_id": "app-c90f64cd",
+          "round": "R2",
+          "phase": "post",
+          "items": [
+            {
+              "id": "post-r2-1",
+              "label": "All panellists submitted feedback",
+              "blocking": true,
+              "done": true,
+              "owner": "panel",
+              "note": "All panellists submitted",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.276163"
+            },
+            {
+              "id": "post-r2-2",
+              "label": "Consolidated recommendation produced",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "Agent-suggested verdict: offer \u2014 Panel majority positive (R1 82, R2 avg 91)",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.276187"
+            },
+            {
+              "id": "post-r2-3",
+              "label": "Final decision recorded",
+              "blocking": true,
+              "done": true,
+              "owner": "agent",
+              "note": "HR verdict: offer (agent suggested: offer)",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.276429"
+            },
+            {
+              "id": "post-r2-4",
+              "label": "Candidate notified",
+              "blocking": false,
+              "done": true,
+              "owner": "agent",
+              "note": "Handed to Offer Discussion Team for CTC negotiation",
+              "ticked_by": "agent",
+              "ticked_at": "2026-04-15T04:23:46.276555"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "candidates": {
+    "cand-001": {
+      "id": "cand-001",
+      "profile": {
+        "employee_id": "EMP10234",
+        "name": "Rohan Desai",
+        "email": "rohan.desai@Xebia192.onmicrosoft.com",
+        "current_role": "Sr. Relationship Manager",
+        "current_location": "Indore",
+        "current_band": "AM",
+        "tenure_years": 5.2,
+        "kras": [
+          "Grow branch CASA book by 15% YoY",
+          "Cross-sell 3+ products per relationship",
+          "Maintain NPS above 60"
+        ],
+        "skills": [
+          "Bank Sales",
+          "Business Development",
+          "Account Development",
+          "Commercial Banking",
+          "Banking Relationship Management",
+          "Business Partnering"
+        ],
+        "education": "MBA Finance, IIM Indore",
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-002": {
+      "id": "cand-002",
+      "profile": {
+        "employee_id": "EMP10567",
+        "name": "Ananya Iyer",
+        "email": "ananya.iyer@axisbank.test",
+        "current_role": "Branch Operations Manager",
+        "current_location": "Surat",
+        "current_band": "AM",
+        "tenure_years": 6.8,
+        "kras": [
+          "Zero operational losses",
+          "Lead bulk corporate onboarding mandates",
+          "Team of 8 direct reports"
+        ],
+        "skills": [
+          "corporate salary acquisition",
+          "KYC compliance",
+          "stakeholder management",
+          "portfolio sales",
+          "relationship management",
+          "branch operations"
+        ],
+        "education": "B.Com (Hons), Gujarat University",
+        "last_rating": "Meets Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-003": {
+      "id": "cand-003",
+      "profile": {
+        "employee_id": "EMP10891",
+        "name": "Karthik Reddy",
+        "email": "karthik.reddy@axisbank.test",
+        "current_role": "Customer Service Manager",
+        "current_location": "Hyderabad",
+        "current_band": null,
+        "tenure_years": 3.4,
+        "kras": [
+          "Service desk SLA adherence",
+          "Drive digital adoption"
+        ],
+        "skills": [
+          "relationship management",
+          "stakeholder management",
+          "CASA cross-sell"
+        ],
+        "education": "BBA, Osmania University",
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-004": {
+      "id": "cand-004",
+      "profile": {
+        "employee_id": "EMP11023",
+        "name": "Priya Nair",
+        "email": "priya.nair@axisbank.test",
+        "current_role": "Wealth Relationship Manager",
+        "current_location": "Kochi",
+        "current_band": "AM",
+        "tenure_years": 7.1,
+        "kras": [
+          "HNI portfolio of \u20b9120Cr",
+          "Advisory mandate renewals"
+        ],
+        "skills": [
+          "Bank Sales",
+          "Business Development",
+          "Account Development",
+          "Commercial Banking",
+          "Employers Liability",
+          "Business Partnering"
+        ],
+        "education": "MBA, XIM Bhubaneswar",
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-005": {
+      "id": "cand-005",
+      "profile": {
+        "employee_id": "EMP11544",
+        "name": "Vikram Shah",
+        "email": "vikram.shah@axisbank.test",
+        "current_role": "Teller",
+        "current_location": "Ahmedabad",
+        "current_band": null,
+        "tenure_years": 1.5,
+        "kras": [
+          "Cash handling accuracy",
+          "Customer wait-time under 5 min"
+        ],
+        "skills": [
+          "KYC compliance"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-006": {
+      "id": "cand-006",
+      "profile": {
+        "employee_id": "EMP11890",
+        "name": "Anil Deshmukh",
+        "email": "anil.deshmukh@axisbank.test",
+        "current_role": "Deputy Branch Manager",
+        "current_location": "Pune",
+        "current_band": "DM",
+        "tenure_years": 9.4,
+        "kras": [
+          "Branch P&L of \u20b942Cr",
+          "Lead 18 FTEs across sales & ops",
+          "100% audit closure within SLA"
+        ],
+        "skills": [
+          "branch operations",
+          "team leadership",
+          "P&L ownership",
+          "audit & compliance",
+          "customer experience",
+          "CASA cross-sell"
+        ],
+        "education": "MBA, Symbiosis Pune",
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-007": {
+      "id": "cand-007",
+      "profile": {
+        "employee_id": "EMP12044",
+        "name": "Sunita Pillai",
+        "email": "sunita.pillai@axisbank.test",
+        "current_role": "Branch Manager - Tier 2",
+        "current_location": "Nashik",
+        "current_band": "DM",
+        "tenure_years": 11.2,
+        "kras": [
+          "Branch P&L of \u20b928Cr",
+          "Won 'Best Branch West' 2024",
+          "Mentor 3 BDMs"
+        ],
+        "skills": [
+          "branch operations",
+          "team leadership",
+          "P&L ownership",
+          "audit & compliance",
+          "customer experience",
+          "CASA cross-sell",
+          "wealth advisory"
+        ],
+        "education": "B.Com, MMS Mumbai University",
+        "last_rating": "Outstanding",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-008": {
+      "id": "cand-008",
+      "profile": {
+        "employee_id": "EMP12330",
+        "name": "Rakesh Bhandari",
+        "email": "rakesh.bhandari@axisbank.test",
+        "current_role": "Cluster Sales Lead",
+        "current_location": "Pune",
+        "current_band": null,
+        "tenure_years": 8.0,
+        "kras": [
+          "Cluster CASA growth 22% YoY"
+        ],
+        "skills": [
+          "team leadership",
+          "P&L ownership",
+          "CASA cross-sell",
+          "stakeholder management"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-009": {
+      "id": "cand-009",
+      "profile": {
+        "employee_id": "EMP12655",
+        "name": "Meera Subramanian",
+        "email": "meera.subramanian@axisbank.test",
+        "current_role": "Wealth RM",
+        "current_location": "Bengaluru",
+        "current_band": "AM",
+        "tenure_years": 6.5,
+        "kras": [
+          "AUM of \u20b995Cr",
+          "Advisory mandate conversion 38%"
+        ],
+        "skills": [
+          "HNI relationship management",
+          "portfolio advisory",
+          "mutual funds",
+          "AIF & PMS",
+          "KYC compliance",
+          "client acquisition"
+        ],
+        "education": "MBA, IIM Bangalore",
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-010": {
+      "id": "cand-010",
+      "profile": {
+        "employee_id": "EMP12781",
+        "name": "Aditya Menon",
+        "email": "aditya.menon@axisbank.test",
+        "current_role": "Investment Counsellor",
+        "current_location": "Bengaluru",
+        "current_band": null,
+        "tenure_years": 4.8,
+        "kras": [
+          "Drive structured product sales"
+        ],
+        "skills": [
+          "portfolio advisory",
+          "mutual funds",
+          "AIF & PMS",
+          "client acquisition",
+          "structured products"
+        ],
+        "education": "CFA Level III",
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-011": {
+      "id": "cand-011",
+      "profile": {
+        "employee_id": "EMP12902",
+        "name": "Tara Krishnamurthy",
+        "email": "tara.krishnamurthy@axisbank.test",
+        "current_role": "Sr. Wealth RM",
+        "current_location": "Chennai",
+        "current_band": "SM",
+        "tenure_years": 10.3,
+        "kras": [
+          "Burgundy Private book \u20b9180Cr",
+          "Estate planning lead for SI region"
+        ],
+        "skills": [
+          "HNI relationship management",
+          "portfolio advisory",
+          "mutual funds",
+          "AIF & PMS",
+          "KYC compliance",
+          "client acquisition",
+          "estate planning"
+        ],
+        "education": null,
+        "last_rating": "Outstanding",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-012": {
+      "id": "cand-012",
+      "profile": {
+        "employee_id": "EMP13110",
+        "name": "Ishaan Bose",
+        "email": "ishaan.bose@axisbank.test",
+        "current_role": "Credit Analyst - SME",
+        "current_location": "Mumbai",
+        "current_band": "AM",
+        "tenure_years": 3.9,
+        "kras": [
+          "Underwrite \u20b9120Cr SME book",
+          "Zero NPA on FY24 originations"
+        ],
+        "skills": [
+          "credit underwriting",
+          "financial statement analysis",
+          "risk assessment",
+          "RBI compliance",
+          "MS Excel modelling",
+          "secured lending"
+        ],
+        "education": "CA (ICAI)",
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-013": {
+      "id": "cand-013",
+      "profile": {
+        "employee_id": "EMP13245",
+        "name": "Pooja Saxena",
+        "email": "pooja.saxena@axisbank.test",
+        "current_role": "Risk Officer",
+        "current_location": "Mumbai",
+        "current_band": null,
+        "tenure_years": 5.6,
+        "kras": [
+          "Portfolio quality monitoring"
+        ],
+        "skills": [
+          "risk assessment",
+          "RBI compliance",
+          "financial statement analysis",
+          "credit underwriting"
+        ],
+        "education": "MBA Finance, NMIMS",
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-014": {
+      "id": "cand-014",
+      "profile": {
+        "employee_id": "EMP13388",
+        "name": "Harshad Mehta",
+        "email": "harshad.mehta@axisbank.test",
+        "current_role": "Trade Finance Officer",
+        "current_location": "Mumbai",
+        "current_band": null,
+        "tenure_years": 7.2,
+        "kras": [
+          "LC/BG issuance cycle time"
+        ],
+        "skills": [
+          "trade finance",
+          "working capital",
+          "RBI compliance",
+          "secured lending"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-015": {
+      "id": "cand-015",
+      "profile": {
+        "employee_id": "EMP13502",
+        "name": "Lalitha Ramaswamy",
+        "email": "lalitha.ramaswamy@axisbank.test",
+        "current_role": "Branch Ops Lead",
+        "current_location": "Chennai",
+        "current_band": "AM",
+        "tenure_years": 8.4,
+        "kras": [
+          "Audit score 96/100",
+          "Process automation rolled to 9 branches"
+        ],
+        "skills": [
+          "branch operations",
+          "audit & compliance",
+          "team leadership",
+          "process improvement",
+          "KYC compliance",
+          "vendor management",
+          "Six Sigma"
+        ],
+        "education": null,
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-016": {
+      "id": "cand-016",
+      "profile": {
+        "employee_id": "EMP13644",
+        "name": "Manish Agrawal",
+        "email": "manish.agrawal@axisbank.test",
+        "current_role": "Quality & Compliance Manager",
+        "current_location": "Coimbatore",
+        "current_band": null,
+        "tenure_years": 6.0,
+        "kras": [
+          "Drive RPA pilots"
+        ],
+        "skills": [
+          "audit & compliance",
+          "process improvement",
+          "RPA",
+          "vendor management",
+          "KYC compliance"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-017": {
+      "id": "cand-017",
+      "profile": {
+        "employee_id": "EMP13780",
+        "name": "Kavya Bhatt",
+        "email": "kavya.bhatt@axisbank.test",
+        "current_role": "Sr. Product Manager - Mobile",
+        "current_location": "Gurugram",
+        "current_band": "SM",
+        "tenure_years": 7.8,
+        "kras": [
+          "Mobile DAU growth 21% YoY",
+          "Lead 4-PM pod"
+        ],
+        "skills": [
+          "product management",
+          "user research",
+          "analytics SQL",
+          "stakeholder management",
+          "agile delivery",
+          "mobile banking",
+          "A/B testing"
+        ],
+        "education": "MBA, ISB Hyderabad",
+        "last_rating": "Outstanding",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-018": {
+      "id": "cand-018",
+      "profile": {
+        "employee_id": "EMP13899",
+        "name": "Yash Malhotra",
+        "email": "yash.malhotra@axisbank.test",
+        "current_role": "Product Analyst",
+        "current_location": "Bengaluru",
+        "current_band": null,
+        "tenure_years": 3.1,
+        "kras": [
+          "Define KPI dashboards"
+        ],
+        "skills": [
+          "analytics SQL",
+          "user research",
+          "agile delivery",
+          "product management"
+        ],
+        "education": "B.Tech, BITS Pilani",
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-019": {
+      "id": "cand-019",
+      "profile": {
+        "employee_id": "EMP14002",
+        "name": "Sneha Kapoor",
+        "email": "sneha.kapoor@axisbank.test",
+        "current_role": "UX Researcher",
+        "current_location": "Gurugram",
+        "current_band": null,
+        "tenure_years": 4.4,
+        "kras": [
+          "Run quarterly usability studies"
+        ],
+        "skills": [
+          "user research",
+          "stakeholder management",
+          "mobile banking"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-020": {
+      "id": "cand-020",
+      "profile": {
+        "employee_id": "EMP14118",
+        "name": "Rajat Khanna",
+        "email": "rajat.khanna@axisbank.test",
+        "current_role": "Area Sales Manager",
+        "current_location": "Lucknow",
+        "current_band": "DM",
+        "tenure_years": 9.0,
+        "kras": [
+          "North zone CASA growth",
+          "Mentor 12 BDMs"
+        ],
+        "skills": [
+          "corporate salary acquisition",
+          "relationship management",
+          "portfolio sales",
+          "stakeholder management",
+          "KYC compliance",
+          "CASA cross-sell",
+          "team leadership"
+        ],
+        "education": null,
+        "last_rating": "Exceeds Expectations",
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-021": {
+      "id": "cand-021",
+      "profile": {
+        "employee_id": "EMP14240",
+        "name": "Deepika Menon",
+        "email": "deepika.menon@axisbank.test",
+        "current_role": "Relationship Manager",
+        "current_location": "Vadodara",
+        "current_band": null,
+        "tenure_years": 4.6,
+        "kras": [
+          "Corporate salary acquisition target 110%"
+        ],
+        "skills": [
+          "corporate salary acquisition",
+          "relationship management",
+          "portfolio sales",
+          "KYC compliance",
+          "CASA cross-sell"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    },
+    "cand-022": {
+      "id": "cand-022",
+      "profile": {
+        "employee_id": "EMP14377",
+        "name": "Nikhil Joshi",
+        "email": "nikhil.joshi@axisbank.test",
+        "current_role": "Relationship Manager",
+        "current_location": "Mysuru",
+        "current_band": null,
+        "tenure_years": 3.8,
+        "kras": [
+          "Tech-park onboarding"
+        ],
+        "skills": [
+          "corporate salary acquisition",
+          "relationship management",
+          "stakeholder management",
+          "CASA cross-sell"
+        ],
+        "education": null,
+        "last_rating": null,
+        "phone": null,
+        "compensation": null
+      },
+      "kind": "internal"
+    }
+  },
+  "folders": {
+    "/cvs/shortlisted/job-590321/": [
+      "app-c90f64cd"
+    ]
+  },
+  "panels": {
+    "panel-bdm-central": {
+      "id": "panel-bdm-central",
+      "name": "Central Zone BDM Panel",
+      "members": [
+        {
+          "user_id": "suresh.kumar@Xebia192.onmicrosoft.com",
+          "name": "Suresh Kumar",
+          "role": "hiring_manager"
+        },
+        {
+          "user_id": "rajesh.menon@stub.local",
+          "name": "Rajesh Menon",
+          "role": "interviewer"
+        },
+        {
+          "user_id": "priya.shah@stub.local",
+          "name": "Priya Shah",
+          "role": "interviewer"
+        }
+      ],
+      "role_scopes": [
+        "Retail Banking/DM",
+        "Retail Banking"
+      ],
+      "location": "Bhopal",
+      "default_size": 3,
+      "active": true,
+      "created_at": "2026-04-15T09:52:34.030226+05:30",
+      "updated_at": "2026-04-15T09:52:34.030233+05:30"
+    },
+    "panel-retail-senior": {
+      "id": "panel-retail-senior",
+      "name": "Retail Banking Senior Panel",
+      "members": [
+        {
+          "user_id": "suresh.kumar@Xebia192.onmicrosoft.com",
+          "name": "Suresh Kumar",
+          "role": "hiring_manager"
+        },
+        {
+          "user_id": "vikram.nair@stub.local",
+          "name": "Vikram Nair",
+          "role": "hiring_manager"
+        },
+        {
+          "user_id": "ananya.iyer@stub.local",
+          "name": "Ananya Iyer",
+          "role": "interviewer"
+        }
+      ],
+      "role_scopes": [
+        "Retail Banking/SM",
+        "Retail Banking",
+        "Branch Banking",
+        "Branch Banking/SM"
+      ],
+      "location": "Mumbai",
+      "default_size": 3,
+      "active": true,
+      "created_at": "2026-04-15T09:52:34.030241+05:30",
+      "updated_at": "2026-04-15T09:52:34.030242+05:30"
+    },
+    "panel-branch-pune": {
+      "id": "panel-branch-pune",
+      "name": "Pune Branch Banking Panel",
+      "members": [
+        {
+          "user_id": "suresh.kumar@Xebia192.onmicrosoft.com",
+          "name": "Suresh Kumar",
+          "role": "hiring_manager"
+        },
+        {
+          "user_id": "priya.shah@stub.local",
+          "name": "Priya Shah",
+          "role": "interviewer"
+        },
+        {
+          "user_id": "karthik.reddy@stub.local",
+          "name": "Karthik Reddy",
+          "role": "hiring_manager"
+        }
+      ],
+      "role_scopes": [
+        "Branch Banking",
+        "Branch Banking/SM",
+        "Retail Banking",
+        "Retail Banking/SM"
+      ],
+      "location": "Pune",
+      "default_size": 3,
+      "active": true,
+      "created_at": "2026-04-15T09:52:34.030247+05:30",
+      "updated_at": "2026-04-15T09:52:34.030247+05:30"
+    },
+    "panel-wholesale-credit": {
+      "id": "panel-wholesale-credit",
+      "name": "Wholesale Credit Panel",
+      "members": [
+        {
+          "user_id": "karthik.reddy@stub.local",
+          "name": "Karthik Reddy",
+          "role": "hiring_manager"
+        },
+        {
+          "user_id": "ananya.iyer@stub.local",
+          "name": "Ananya Iyer",
+          "role": "interviewer"
+        }
+      ],
+      "role_scopes": [
+        "Wholesale Banking",
+        "Wholesale Banking/AM"
+      ],
+      "location": "Mumbai",
+      "default_size": 2,
+      "active": true,
+      "created_at": "2026-04-15T09:52:34.030251+05:30",
+      "updated_at": "2026-04-15T09:52:34.030252+05:30"
+    }
+  }
+}
