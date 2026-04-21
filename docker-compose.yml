@@ -119,7 +119,7 @@ services:
   vi-backend:
     build:
       context: ./virtual-interviewer
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     image: axis-demo/vi-backend:latest
     container_name: axis-vi-backend
     profiles: [ vi ]

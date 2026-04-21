@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libpq5 \
     libgl1 \
+    libgles2 \
+    libegl1 \
     libglib2.0-0 \
     python3-dev && \
     python -m venv /opt/venv && \
@@ -86,6 +88,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libgl1 \
+    libgles2 \
+    libegl1 \
     libglib2.0-0 \
     cmake \
     build-essential && \
