@@ -125,14 +125,11 @@ class OpenAIService:
         and ``alloy`` (Hindi) which caused the voice to shift mid-interview
         and ``alloy`` sounded robotic for Hindi.
         """
-        response = self.client.audio.speech.create(
-            model="tts-1-hd",
-            voice="shimmer",
-            input=text,
-            speed=0.95,  # slightly slower for clearer Hindi pronunciation
-        )
+        if not hasattr(self, "_sarvam_tts"):
+            from app.services.sarvam_service import SarvamService
 
-        return response.content
+            self._sarvam_tts = SarvamService()
+        return self._sarvam_tts.generate_text_to_speech(text, language=language)
     
     def evaluate_interview(
         self,
