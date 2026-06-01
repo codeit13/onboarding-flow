@@ -75,4 +75,11 @@ class SarvamService:
         if not audios:
             raise ValueError("Sarvam TTS returned no audio in response")
 
-        return base64.b64decode(audios[0])
+        audio_bytes = base64.b64decode(audios[0])
+        logger.info(
+            "Sarvam TTS ok: speaker=%s lang=%s bytes=%d",
+            self.speaker,
+            payload["target_language_code"],
+            len(audio_bytes),
+        )
+        return audio_bytes

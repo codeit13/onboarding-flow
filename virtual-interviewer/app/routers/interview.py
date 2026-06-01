@@ -300,23 +300,17 @@ async def generate_speech(interview_id: str, text: str):
     # Get the current question
     current_question = interview_service.get_current_question(interview_id)
     
-    # If this is a request for the current question's speech, use cached audio if available
-    if current_question and text == current_question["question"] and "audio_cache_path" in current_question:
-        if os.path.exists(current_question["audio_cache_path"]):
-            try:
-                with open(current_question["audio_cache_path"], 'rb') as f:
-                    audio_content = f.read()
-                return StreamingResponse(
-                    io.BytesIO(audio_content),
-                    media_type="audio/mpeg"
-                )
-            except Exception as e:
-                # If reading from cache fails, continue to generate
-                pass
-    
-    # Generate speech
     lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
-    audio_content = interview_service.generate_speech(text, language=lang)
+    if current_question and text == current_question["question"] and "audio_cache_path" in current_question:
+        audio_cache_dir = f"interview_data/{interview_id}_audio"
+        audio_content = interview_service.load_or_generate_cached_audio(
+            audio_cache_dir,
+            current_question["audio_cache_path"],
+            text,
+            lang,
+        )
+    else:
+        audio_content = interview_service.generate_speech(text, language=lang)
 
     # Return audio as streaming response
     return StreamingResponse(
@@ -382,21 +376,19 @@ async def get_question_with_audio(interview_id: str):
             "message": "No more questions or interview not found"
         })
     
-    # Get audio from cache if available
-    audio_content = None
-    if "audio_cache_path" in question_data and os.path.exists(question_data["audio_cache_path"]):
-        try:
-            with open(question_data["audio_cache_path"], 'rb') as f:
-                audio_content = f.read()
-        except Exception as e:
-            # If reading from cache fails, generate again
-            audio_content = None
-    
-    # Generate audio if not available from cache
-    if not audio_content:
-        interview = interview_service.get_interview(interview_id)
-        lang = interview.get("language") or interview.get("metadata", {}).get("language", "en") if interview else "en"
-        audio_content = interview_service.generate_speech(question_data["question"], language=lang)
+    interview = interview_service.get_interview(interview_id)
+    lang = (
+        interview.get("language") or interview.get("metadata", {}).get("language", "en")
+        if interview
+        else "en"
+    )
+    audio_cache_dir = f"interview_data/{interview_id}_audio"
+    audio_cache_file = question_data.get("audio_cache_path") or (
+        f"{audio_cache_dir}/question_{question_data['index']}.mp3"
+    )
+    audio_content = interview_service.load_or_generate_cached_audio(
+        audio_cache_dir, audio_cache_file, question_data["question"], lang
+    )
 
     # Remove internal audio cache path from response
     if "audio_cache_path" in question_data:
@@ -427,20 +419,12 @@ async def get_welcome_message(interview_id: str):
         welcome_message = interview["metadata"]["welcome_message"]
         welcome_audio_path = interview["metadata"].get("welcome_audio_path")
     
-    # Get audio content
-    audio_content = None
-    if welcome_audio_path and os.path.exists(welcome_audio_path):
-        try:
-            with open(welcome_audio_path, 'rb') as f:
-                audio_content = f.read()
-        except Exception as e:
-            # If reading from cache fails, generate again
-            audio_content = None
-    
-    # Generate audio if not available from cache
-    if not audio_content:
-        lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
-        audio_content = interview_service.generate_speech(welcome_message, language=lang)
+    audio_cache_dir = f"interview_data/{interview_id}_audio"
+    welcome_path = welcome_audio_path or f"{audio_cache_dir}/welcome.mp3"
+    lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
+    audio_content = interview_service.load_or_generate_cached_audio(
+        audio_cache_dir, welcome_path, welcome_message, lang
+    )
 
     # Convert audio to base64 for sending in JSON
     audio_base64 = base64.b64encode(audio_content).decode('ascii')
@@ -471,31 +455,10 @@ async def get_question_audio(interview_id: str, index: int):
     audio_cache_dir = f"interview_data/{interview_id}_audio"
     audio_cache_file = f"{audio_cache_dir}/question_{index}.mp3"
     
-    audio_content = None
-    if os.path.exists(audio_cache_file):
-        try:
-            with open(audio_cache_file, 'rb') as f:
-                audio_content = f.read()
-        except Exception as e:
-            # If reading from cache fails, generate again
-            audio_content = None
-    
-    # Generate audio if not available from cache
-    if not audio_content:
-        # Create the cache directory if needed
-        os.makedirs(audio_cache_dir, exist_ok=True)
-        
-        # Generate the audio
-        lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
-        audio_content = interview_service.generate_speech(question_text, language=lang)
-
-        # Cache the audio for future use
-        try:
-            with open(audio_cache_file, 'wb') as f:
-                f.write(audio_content)
-        except Exception as e:
-            # Continue if caching fails
-            pass
+    lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
+    audio_content = interview_service.load_or_generate_cached_audio(
+        audio_cache_dir, audio_cache_file, question_text, lang
+    )
 
     # Return audio as streaming response
     return StreamingResponse(
@@ -543,27 +506,10 @@ async def get_full_question(interview_id: str, index: int):
     os.makedirs(audio_cache_dir, exist_ok=True)
     audio_cache_file = f"{audio_cache_dir}/question_{index}.mp3"
     
-    audio_content = None
-    if os.path.exists(audio_cache_file):
-        try:
-            with open(audio_cache_file, 'rb') as f:
-                audio_content = f.read()
-        except Exception as e:
-            # Failed to read cache, will regenerate
-            audio_content = None
-    
-    # Generate audio if not available from cache
-    if not audio_content:
-        lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
-        audio_content = interview_service.generate_speech(question_text, language=lang)
-
-        # Cache the audio for future use
-        try:
-            with open(audio_cache_file, 'wb') as f:
-                f.write(audio_content)
-        except Exception as e:
-            # Continue if caching fails
-            pass
+    lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
+    audio_content = interview_service.load_or_generate_cached_audio(
+        audio_cache_dir, audio_cache_file, question_text, lang
+    )
 
     # Convert audio to base64 for sending in JSON
     audio_base64 = base64.b64encode(audio_content).decode('ascii')
@@ -592,22 +538,15 @@ async def get_welcome_audio(interview_id: str):
     if "metadata" in interview and "welcome_message" in interview["metadata"]:
         welcome_message = interview["metadata"]["welcome_message"]
     
-    # Check for cached welcome audio
-    audio_content = None
-    if "metadata" in interview and "welcome_audio_path" in interview["metadata"]:
-        audio_path = interview["metadata"]["welcome_audio_path"]
-        if os.path.exists(audio_path):
-            try:
-                with open(audio_path, 'rb') as f:
-                    audio_content = f.read()
-            except Exception:
-                # Will regenerate if reading fails
-                audio_content = None
-    
-    # Generate audio if needed
-    if not audio_content:
-        lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
-        audio_content = interview_service.generate_speech(welcome_message, language=lang)
+    audio_cache_dir = f"interview_data/{interview_id}_audio"
+    welcome_path = (
+        interview.get("metadata", {}).get("welcome_audio_path")
+        or f"{audio_cache_dir}/welcome.mp3"
+    )
+    lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
+    audio_content = interview_service.load_or_generate_cached_audio(
+        audio_cache_dir, welcome_path, welcome_message, lang
+    )
 
     # Convert to base64
     audio_base64 = base64.b64encode(audio_content).decode('ascii')

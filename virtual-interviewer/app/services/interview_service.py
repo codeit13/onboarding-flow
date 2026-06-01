@@ -20,6 +20,10 @@ logger = logging.getLogger("interview-service")
 # Load environment variables
 load_dotenv()
 
+# Bump when switching TTS provider/voice so old OpenAI MP3 caches are ignored.
+TTS_CACHE_TAG = os.getenv("TTS_CACHE_TAG", "sarvam-bulbul-v3-aditya")
+
+
 class InterviewService:
     def __init__(self):
         self.openai_service = OpenAIService()
@@ -32,10 +36,48 @@ class InterviewService:
         # Create data directories if they don't exist
         os.makedirs("interview_data", exist_ok=True)
         os.makedirs("mcp_data", exist_ok=True)
-        
-        # Initialize log directory
         os.makedirs("logs", exist_ok=True)
-    
+
+    @staticmethod
+    def _tts_cache_tag_path(audio_dir: str) -> str:
+        return os.path.join(audio_dir, ".tts_cache_tag")
+
+    def is_audio_cache_current(self, audio_dir: str) -> bool:
+        tag_path = self._tts_cache_tag_path(audio_dir)
+        if not os.path.isfile(tag_path):
+            return False
+        try:
+            with open(tag_path, encoding="utf-8") as f:
+                return f.read().strip() == TTS_CACHE_TAG
+        except OSError:
+            return False
+
+    def mark_audio_cache_current(self, audio_dir: str) -> None:
+        os.makedirs(audio_dir, exist_ok=True)
+        with open(self._tts_cache_tag_path(audio_dir), "w", encoding="utf-8") as f:
+            f.write(TTS_CACHE_TAG)
+
+    def load_or_generate_cached_audio(
+        self, audio_dir: str, audio_path: str, text: str, language: str
+    ) -> bytes:
+        """Return MP3 bytes; regenerate when cache missing or from a prior TTS provider."""
+        if os.path.exists(audio_path) and self.is_audio_cache_current(audio_dir):
+            with open(audio_path, "rb") as f:
+                return f.read()
+
+        if os.path.exists(audio_path) and not self.is_audio_cache_current(audio_dir):
+            logger.info(
+                "Ignoring stale TTS cache at %s (tag mismatch); regenerating with Sarvam",
+                audio_path,
+            )
+
+        audio_content = self.generate_speech(text, language=language)
+        os.makedirs(audio_dir, exist_ok=True)
+        with open(audio_path, "wb") as f:
+            f.write(audio_content)
+        self.mark_audio_cache_current(audio_dir)
+        return audio_content
+
     def create_interview_session(
         self,
         resume_data: Optional[ResumeData] = None,
@@ -144,6 +186,12 @@ class InterviewService:
                 )
             except Exception as e:
                 logger.error("Failed to pre-generate Q%d audio: %s", idx + 1, e)
+
+        if os.path.isfile(welcome_path) or any(
+            os.path.isfile(os.path.join(audio_dir, f"question_{i}.mp3"))
+            for i, _ in enumerate(interview_data.get("questions", []))
+        ):
+            self.mark_audio_cache_current(audio_dir)
     
     def get_interview(self, interview_id: str) -> Optional[Dict]:
         """Get interview session data"""
@@ -179,14 +227,17 @@ class InterviewService:
         os.makedirs(audio_cache_dir, exist_ok=True)
         audio_cache_file = f"{audio_cache_dir}/question_{current_index}.mp3"
         
-        # Generate and cache audio if not already cached
-        if not os.path.exists(audio_cache_file):
+        # Generate and cache audio if missing or from a prior TTS provider
+        if not (
+            os.path.exists(audio_cache_file)
+            and self.is_audio_cache_current(audio_cache_dir)
+        ):
             logger.info(f"Generating audio for question {current_index+1} in interview {interview_id}")
             try:
                 lang = interview.get("language") or interview.get("metadata", {}).get("language", "en")
-                audio_content = self.generate_speech(question_text, language=lang)
-                with open(audio_cache_file, 'wb') as f:
-                    f.write(audio_content)
+                self.load_or_generate_cached_audio(
+                    audio_cache_dir, audio_cache_file, question_text, lang
+                )
                 logger.info(f"Cached audio for question {current_index+1} in interview {interview_id}")
             except Exception as e:
                 logger.error(f"Error generating audio for question {current_index+1}: {str(e)}")
@@ -239,14 +290,7 @@ class InterviewService:
             return {"success": False, "error": f"Transcription error: {str(e)}"}
     
     def generate_speech(self, text: str, language: str = "en") -> bytes:
-        """Generate speech from text using OpenAI.
-
-        OpenAI's ``tts-1`` model speaks Hindi natively (Devanagari input),
-        but the voice still needs to be one that handles non-English
-        smoothly. ``alloy`` and ``nova`` both do; we pick ``nova`` for
-        English (warmer, default) and ``alloy`` for Hindi (more neutral,
-        clearer pronunciation).
-        """
+        """Generate speech from text using OpenAI."""
         return self.openai_service.generate_text_to_speech(text, language=language)
     
     def evaluate_interview(self, interview_id: str) -> Dict:
