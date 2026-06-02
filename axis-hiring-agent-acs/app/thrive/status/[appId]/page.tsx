@@ -791,16 +791,14 @@ function EmployeeStatusContent() {
               <div className="mt-4 bg-axis-canvas border-2 border-emerald-500/60 rounded-card p-5">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] uppercase tracking-wider bg-emerald-600 text-white font-semibold px-2 py-0.5 rounded">
-                    Round 1 cleared
+                    Round 1 Completed
                   </span>
                 </div>
                 <h2 className="text-lg font-semibold text-axis-ink mt-2">
-                  You've passed Round 1 🎉
+                We have recorded Round 1 answers and are now preparing for your Round 2 panel interview.
                 </h2>
                 <p className="text-xs text-axis-muted mt-1 max-w-2xl">
-                  Great job — your Round 1 answers cleared the bar for
-                  this role. The next step is your Round 2 panel interview
-                  with the hiring team.
+                Our team would get back to you with next steps.
                 </p>
               </div>
             )}
