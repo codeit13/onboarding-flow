@@ -37,6 +37,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Runtime override for browser API URL (set via docker-compose ACS_API_BASE)
+ENV ACS_API_BASE=
 
 RUN addgroup --system --gid 1001 nodejs \
  && adduser  --system --uid 1001 nextjs

@@ -10,8 +10,8 @@
 // are: apply, tick a checklist item, submit panel feedback, and (rarely)
 // nudge `unblockApplication` to retry the orchestrator.
 
-// API base resolution order:
-//   1. window.__API_BASE__ (runtime override, e.g. set in a <script> tag)
+// API base resolution order (evaluated on each request, not at module load):
+//   1. window.__API_BASE__ (runtime override from layout Script tag)
 //   2. NEXT_PUBLIC_API_BASE (build-time env, baked at `next dev` / `next build`)
 //   3. http://localhost:8000 (demo-stable default)
 const _ENV_BASE =
@@ -19,13 +19,19 @@ const _ENV_BASE =
     ? process.env.NEXT_PUBLIC_API_BASE
     : "http://localhost:8000";
 
-export const API_BASE =
-  typeof window !== "undefined"
-    ? (window as any).__API_BASE__ || _ENV_BASE
-    : _ENV_BASE;
+export function getApiBase(): string {
+  if (typeof window !== "undefined") {
+    const runtime = (window as { __API_BASE__?: string }).__API_BASE__;
+    if (runtime) return runtime;
+  }
+  return _ENV_BASE;
+}
+
+/** @deprecated Prefer getApiBase(); kept for callers that read the base once. */
+export const API_BASE = getApiBase();
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${getApiBase()}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -946,7 +952,7 @@ export const api = {
   externalParseResumeFile: async (file: File) => {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch(`${API_BASE}/external/parse-resume-file`, {
+    const res = await fetch(`${getApiBase()}/external/parse-resume-file`, {
       method: "POST",
       body: fd,
     });
@@ -1023,7 +1029,7 @@ export const api = {
   externalParseSalarySlip: async (file: File) => {
     const fd = new FormData();
     fd.append("file", file);
-    const res = await fetch(`${API_BASE}/external/parse-salary-slip`, {
+    const res = await fetch(`${getApiBase()}/external/parse-salary-slip`, {
       method: "POST",
       body: fd,
     });
@@ -1055,7 +1061,7 @@ export const api = {
     fd.append("name", params.name);
     fd.append("email", params.email);
     fd.append("search_query", params.searchQuery);
-    const res = await fetch(`${API_BASE}/external/intake`, {
+    const res = await fetch(`${getApiBase()}/external/intake`, {
       method: "POST",
       body: fd,
     });
@@ -1190,7 +1196,7 @@ export const api = {
       fd.append("custom_criteria", customCriteria.trim());
     }
     for (const f of files) fd.append("files", f);
-    const res = await fetch(`${API_BASE}/hr/bulk-intake`, {
+    const res = await fetch(`${getApiBase()}/hr/bulk-intake`, {
       method: "POST",
       body: fd,
     });
@@ -1208,7 +1214,7 @@ export const api = {
     request<BulkRowDetail>(`/hr/bulk-intake/${poolId}/row/${rowId}`),
   /** CSV export URL (opened as a download, not fetched as JSON). */
   bulkIntakeExportUrl: (poolId: string) =>
-    `${API_BASE}/hr/bulk-intake/${poolId}/export`,
+    `${getApiBase()}/hr/bulk-intake/${poolId}/export`,
   /** Batch update contact details for rows in a pool pending review. */
   updatePoolContacts: (
     poolId: string,

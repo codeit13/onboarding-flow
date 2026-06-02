@@ -97,8 +97,8 @@ services:
       context: ./axis-hiring-agent-acs
       dockerfile: Dockerfile
       args:
-        # API URL seen by the browser (must be a host-visible address)
-        NEXT_PUBLIC_API_BASE: http://localhost:8100
+        # Baked at build time; overridden at runtime via ACS_API_BASE in layout
+        NEXT_PUBLIC_API_BASE: ${ACS_API_BASE:-http://localhost:8100}
     image: axis-demo/acs-frontend:latest
     container_name: axis-acs-frontend
     profiles: [ acs ]
@@ -107,6 +107,9 @@ services:
       - "3000:3000"
     networks:
       - axis-net
+    environment:
+      # Browser-visible API URL (set in repo-root .env, e.g. https://your-backend.example.com)
+      ACS_API_BASE: ${ACS_API_BASE:-http://localhost:8100}
     depends_on:
       - acs-backend
 
